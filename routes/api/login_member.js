@@ -8,9 +8,10 @@ let select_account=(db,req)=>{
       if(err){
         reject(err);
       }else{
-        if(result.length!=0){
+        if(result.length!=1){
           reject("no result");
         }else{
+          req.session.account=result[0].account;
           resolve(result);
         }
       }
@@ -21,7 +22,13 @@ router.post('/',async function(req, res, next) {
   try{
     let results=await select_account(req.db,req);
     console.log("login success");
-    res.send("login success");
+    console.log("session:"+req.session);
+    console.log("sessionID:"+req.sessionID);
+    if(req.session.account!=""){
+      res.send("Welcome "+req.session.account);
+    }else{
+      res.send("login success");
+    }
     console.log(results[0]);
     
   } catch (error) {

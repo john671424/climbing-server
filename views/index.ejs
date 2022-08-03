@@ -7,9 +7,20 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js">
+    </script>
 <script>
+  // 這是什麼醜不啦嘰的東西
   var socket = io();
+  socket.on("connect", () => {
+    console.log(socket.connected); // true
+  });
+  socket.on("hello", (arg) => {
+    console.log(arg); // world
+  });
+  socket.on("test", (arg) => {
+    console.log(arg); // world
+  });
 </script>
   </body>
 </html>

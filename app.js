@@ -4,8 +4,24 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sql = require('mysql');
-
+// var io = require('socket.io')(app);
+var socket = require('./socket_api');
 require('dotenv').config();
+var session = require('express-session');
+var MySQLStore = require('express-mysql-session')(session);
+const options ={
+  connectionLimit: 10,
+  password: process.env.DB_PWD,
+  user: process.env.DB_USER,
+  database: process.env.DB_DB,
+  host: process.env.DB_HOST,
+  createDatabaseTable: true
+}
+var  sessionStore = new MySQLStore(options);
+
+// var sessionStore = new MySQLStore(
+//   connectionConfig
+//   )
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -27,10 +43,23 @@ var select_trackRouter =  require('./routes/api/track/select_track');
 var warning_Router =  require('./routes/api/warning/warning');
 //AR
 var AR_Router =  require('./routes/api/AR/AR');
+//test
+var TEST_Router =  require('./routes/api/test/test_session.js');
 
 var app = express();
 
 
+
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { sameSite: true,
+            /*secure: true ,*/
+            maxAge: 3600*1000,
+            httpOnly: false},
+  store: sessionStore
+}))
 
 var pool = sql.createPool({
   user: process.env.DB_USER,
@@ -41,6 +70,10 @@ var pool = sql.createPool({
 });
 app.use(function(req,res,next){
   req.db=pool;
+  next();
+});
+app.use(function(req,res,next){
+  req.socket=socket;
   next();
 });
 pool.query('SELECT 1+1 AS solution',function(error,results,fields){
@@ -79,6 +112,9 @@ app.use('/api/track/select_friend', select_trackRouter);
 app.use('/api/warning/warning', warning_Router);//repairing
 //AR
 app.use('/api/AR/AR', AR_Router);//building
+//test
+app.use('/api/test/test_session', TEST_Router);//building
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
