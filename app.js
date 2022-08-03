@@ -4,8 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sql = require('mysql');
-
+// var io = require('socket.io')(app);
+var socket = require('./socket_api');
 require('dotenv').config();
+var session = require('express-session')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -30,7 +32,12 @@ var AR_Router =  require('./routes/api/AR/AR');
 
 var app = express();
 
-
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
 
 var pool = sql.createPool({
   user: process.env.DB_USER,
@@ -41,6 +48,10 @@ var pool = sql.createPool({
 });
 app.use(function(req,res,next){
   req.db=pool;
+  next();
+});
+app.use(function(req,res,next){
+  req.socket=socket;
   next();
 });
 pool.query('SELECT 1+1 AS solution',function(error,results,fields){

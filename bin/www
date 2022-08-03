@@ -7,21 +7,18 @@ var app = require('../app');
 var debug = require('debug')('project:server');
 var http = require('http');
 const { log } = require('console');
-let socketapi = require("../socketapi");
+let socket_api = require("../socket_api");
 
 /**
  * Get port from environment and store in Express.
  */
-
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-
 /**
  * Create HTTP server.
  */
-
 var server = http.createServer(app);
-socketapi.io.attach(server);
+socket_api.io.attach(server);
 /**
  * Listen on provided port, on all network interfaces.
  */
