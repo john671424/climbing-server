@@ -4,7 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sql = require('mysql');
-// var io = require('socket.io')(app);
 var socket = require('./socket_api');
 require('dotenv').config();
 var session = require('express-session');
@@ -52,15 +51,8 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true }
-}))
-
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
   cookie: { sameSite: true,
-            /*secure: true ,*/
+            // secure: true ,
             maxAge: 3600*1000,
             httpOnly: false},
   store: sessionStore
