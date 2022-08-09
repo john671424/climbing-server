@@ -7,7 +7,6 @@ var sql = require('mysql');
 // var io = require('socket.io')(app);
 var socket = require('./socket_api');
 require('dotenv').config();
-<<<<<<< HEAD
 var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 const options ={
@@ -23,9 +22,6 @@ var  sessionStore = new MySQLStore(options);
 // var sessionStore = new MySQLStore(
 //   connectionConfig
 //   )
-=======
-var session = require('express-session')
->>>>>>> 10f108deb782084649f3fa92448bcdc25686405a
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
