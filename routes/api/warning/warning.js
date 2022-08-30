@@ -32,11 +32,16 @@ let select_activity=(db,req)=>{
   }
 router.post('/',async function(req, res, next) {
   try{
-    let results=await start_activity(req.db,req);
-    console.log("update success");
-    let results_select=await select_activity(req.db,req);
-    console.log(results_select[0]);
-    res.send("update success");
+    if(req.session.account){
+      let results=await start_activity(req.db,req);
+      console.log("update success");
+      let results_select=await select_activity(req.db,req);
+      console.log(results_select[0]);
+      res.send("update success");
+    }else{
+      req.session.destroy();
+      res.send("session fail");
+    }
   }catch (error) {
     console.log(error);
   }

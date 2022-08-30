@@ -39,8 +39,8 @@ router.post('/',async function(req, res, next) {
         res.send("repeat account");
       }else{
         let results=await signupmember(req.db,req);//註冊
-        console.log("creat account");
-        res.send("creat account");
+        console.log("create account");
+        res.send("create account");
       }
     }
   } catch (error) {

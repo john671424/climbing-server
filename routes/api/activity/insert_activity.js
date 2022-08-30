@@ -37,25 +37,48 @@ let insert_activity_member=(db,req,results)=>{
             resolve(result);
           }
         })
-        console.log("remind"+element);//socket or email
+        // req.socket.io.on("connection", (socket) => {
+        //   let select_result=select_insert_activity_member(db,req,element)
+        //   req.socket.io.in(select_result).emit("account", "invite "+select_result[0]+" to the activity");
+        //   console.log("remind"+select_result);
+        // });
+        // console.log("remind"+element);//socket or email
       });
-      let sql="INSERT INTO `activity_member`(`aID`,`uID`) VALUES (?,?)";
-      let param=[results.insertId,req.body.uID];
+    });
+  }
+let select_insert_activity_member=(db,req)=>{
+  return new Promise((resolve, reject) => {
+    req.body.members.forEach(element => {
+      let sql="SELECT * FROM `member` WHERE `uID`=?";
+      let param=[element];
       db.query(sql,param,(err,result,fields)=>{
         if(err){
           reject(err);
         }else{
+          req.socket.io.on("connection", (socket) => {
+            req.socket.io.sockets.to(result[0].account).emit("account", "invite "+result[0].account+" to the activity");
+            console.log("remind "+result[0].account);
+            console.log("remind "+element);
+          });
           resolve(result);
         }
       })
+      //socket or email
     });
-  }
+  });
+}
 router.post('/',async function(req, res, next) {
   try{
-    let results=await insert_activity(req.db,req);
-    let results_insert=await insert_activity_member(req.db,req,results);
-    console.log("insert success");
-    res.send("insert success");
+    if(req.session.account){
+        let results=await insert_activity(req.db,req);
+        let results_insert=await insert_activity_member(req.db,req,results);
+        let select_results=await select_insert_activity_member(req.db,req);
+        console.log("insert success");
+        res.send("insert success");
+    }else{
+      req.session.destroy();
+      res.send("session fail");
+    }
   }catch (error) {
     console.log(error);
   }

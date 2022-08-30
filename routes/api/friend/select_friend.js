@@ -19,10 +19,15 @@ let select_friend=(db,req)=>{
 }
 router.post('/',async function(req, res, next) {
   try{
-    let results=await select_friend(req.db,req);
-    console.log("select success");
-    res.send("select success");
-    console.log(results);
+    if(req.session.account){
+      let results=await select_friend(req.db,req);
+      console.log("select success");
+      res.send("select success");
+      console.log(results);
+    }else{
+      req.session.destroy();
+      res.send("session fail");
+    }
   }catch (error) {
     console.log(error);
   }

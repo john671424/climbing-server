@@ -7,7 +7,8 @@ var router = express.Router();
 let start_activity=(db,req)=>{
   return new Promise((resolve, reject) => {
     let sql="UPDATE `activity` SET `activity_time`=? WHERE `aID`=?";
-    let param=[Date.now(),req.body.aID];
+    let param=[new Date().toISOString().slice(0, 19).replace('T', ' '),req.body.aID];
+    console.log(new Date().toISOString().slice(0, 19).replace('T', ' '));
     db.query(sql,param,(err,result,fields)=>{
       if(err){
         reject(err);
@@ -32,11 +33,16 @@ let select_activity=(db,req)=>{
   }
 router.post('/',async function(req, res, next) {
   try{
-    let results=await start_activity(req.db,req);
-    console.log("update success");
-    let results_select=await select_activity(req.db,req);
-    console.log(results_select[0]);
-    res.send("update success");
+    if(req.session.account){
+      let results=await start_activity(req.db,req);
+      console.log("update success");
+      let results_select=await select_activity(req.db,req);
+      console.log(results_select[0]);
+      res.send("update success");
+    }else{
+      req.session.destroy();
+      res.send("session fail");
+    }
   }catch (error) {
     console.log(error);
   }

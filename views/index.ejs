@@ -12,15 +12,28 @@
 <script>
   // 這是什麼醜不啦嘰的東西
   var socket = io();
-  socket.on("connect", () => {
-    console.log(socket.connected); // true
+  var socketid;
+  socket.on("connect", (arg) => {
+    socketid=socket.id; // true
+    console.log(socketid);
+    socket.emit("private message",socketid,"private message already send");
   });
-  socket.on("hello", (arg) => {
-    console.log(arg); // world
+  socket.on("account", (arg) => {
+    console.log("account said: "+arg); // world
   });
-  socket.on("test", (arg) => {
-    console.log(arg); // world
+  socket.on('connectToRoom',(arg) => {
+    console.log("room said:"+arg); // world
   });
+  // // socket.on('private message',(arg) => {
+  //   console.log("private message said:"+arg); // world
+  // });
+  socket.on('private message',(socketid,msg) => {
+    console.log(msg);
+    console.log("private message said:  "+socketid+"says: "+msg); // world
+  });
+  socket.emit("hello", "world");
+  //console.log(socket.id);
+  socket.volatile.emit("private message",socketid,"private message");
 </script>
   </body>
 </html>

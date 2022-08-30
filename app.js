@@ -43,7 +43,7 @@ var warning_Router =  require('./routes/api/warning/warning');
 //AR
 var AR_Router =  require('./routes/api/AR/AR');
 //test
-var TEST_Router =  require('./routes/api/test/test_session.js');
+var TEST_Router =  require('./routes/api/test/test_login.js');
 
 var app = express();
 
@@ -103,14 +103,14 @@ app.use('/api/friend/insert_friend', insert_friendRouter);
 app.use('/api/friend/select_friend', select_friendRouter);
 app.use('/api/friend/delete_friend', delete_friendRouter);
 //track
-app.use('/api/track/insert_friend', insert_trackRouter);
-app.use('/api/track/select_friend', select_trackRouter);
+app.use('/api/track/insert_track', insert_trackRouter);
+app.use('/api/track/select_track', select_trackRouter);
 //warning
 app.use('/api/warning/warning', warning_Router);//repairing
 //AR
 app.use('/api/AR/AR', AR_Router);//building
 //test
-app.use('/api/test/test_session', TEST_Router);//building
+app.use('/api/test/test_login', TEST_Router);//building
 
 
 // catch 404 and forward to error handler

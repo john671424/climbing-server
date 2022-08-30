@@ -18,10 +18,15 @@ let select_track=(db,req)=>{
 }
 router.post('/',async function(req, res, next) {
   try{
-    let results_select=await select_track(req.db,req);
-    console.log("select success");
-    res.send("select success");
-    console.log(results);
+    if(req.session.account){
+      let results_select=await select_track(req.db,req);
+      console.log("select success");
+      res.send("select success");
+      console.log(results);
+    }else{
+      req.session.destroy();
+      res.send("session fail");
+    }
   }catch (error) {
     console.log(error);
   }

@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 // {
-//     "uID1":"1",
-//     "uID2":"2"
+//     "uID1":"1",//本人
+//     "uID2":"2"//欲加好友
 // }
 let select_friend=(db,req)=>{
   return new Promise((resolve, reject) => {
@@ -21,15 +21,59 @@ let select_friend=(db,req)=>{
     })
   });
 }
+let select_member=(db,req)=>{
+  return new Promise((resolve, reject) => {
+    let sql="SELECT * FROM `member` WHERE `uID`=?";
+    let param=[req.body.uID1];
+    db.query(sql,param,(err,result,fields)=>{
+      if(err){
+        reject(err);
+      }else{
+        if(result.length!=1){
+          reject("error");
+        }else{
+          resolve(result);
+        }
+      }
+    })
+  });
+}
+let select_member_friend=(db,req)=>{
+  return new Promise((resolve, reject) => {
+    let sql="SELECT * FROM `member` WHERE `uID`=?";
+    let param=[req.body.uID2];
+    db.query(sql,param,(err,result,fields)=>{
+      if(err){
+        reject(err);
+      }else{
+        if(result.length!=1){
+          reject("error");
+        }else{
+          resolve(result);
+        }
+      }
+    })
+  });
+}
 router.post('/',async function(req, res, next) {
   try{
-    if(req.body.uID1 != req.body.uID2){
-      let results=await select_friend(req.db,req);
-      console.log("send friend request");
-      res.send("send friend request");
+    let member_results=await select_member(req.db,req);
+    if(req.session.account && member_results[0].account==req.session.account){
+      if(req.body.uID1 != req.body.uID2){
+        let results=await select_friend(req.db,req);
+        let friend_results=await select_member_friend(req.db,req);
+        req.socket.io.on("connection", (socket) => {
+          req.socket.io.in(member_results[0].account).emit("account", "hello "+member_results[0].account+" account: "+friend_results[0].account+" send friend request to you");
+        });
+        console.log("send friend request");
+        res.send("send friend request");
+      }else{
+        console.log("you are my friend");
+        res.send("you are my friend");
+      }
     }else{
-      console.log("you are my friend");
-      res.send("you are my friend");
+      console.log("no session");
+      res.send("no session");
     }
   }catch (error) {
     console.log(error);

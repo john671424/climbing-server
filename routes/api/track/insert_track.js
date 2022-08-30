@@ -22,13 +22,36 @@ let insert_track=(db,req)=>{
     })
   });
 }
-
+let select_member=(db,req)=>{
+  return new Promise((resolve, reject) => {
+    let sql="SELECT * FROM `member` WHERE `uID`=?";
+    let param=[req.body.uID];
+    db.query(sql,param,(err,result,fields)=>{
+      if(err){
+        reject(err);
+      }else{
+        if(result.length!=1){
+          reject("error");
+        }else{
+          resolve(result);
+        }
+      }
+    })
+  });
+}
 router.post('/',async function(req, res, next) {
   try{
-    let results=await insert_track(req.db,req);
-    
-    console.log("insert success");
-    res.send("insert success");
+    let member_results=await select_member(req.db,req);
+    if(req.session.account && member_results[0].account==req.session.account){
+      let results=await insert_track(req.db,req);
+      console.log(results);
+      console.log("insert success");
+      res.json({"result" : "Fail to add track"});
+      //res.send("insert success");
+    }else{
+      req.session.destroy();
+      res.send("session fail");
+    }
   }catch (error) {
     console.log(error);
   }
