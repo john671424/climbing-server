@@ -5,7 +5,6 @@ var router = express.Router();
 // {
 //     "uID":"1",
 //     "activity_name":"john1",
-//     "activity_time":"john1",
 //     "tID":"1",
 //     "warning_distance":"50",
 //     "warning_time":"15",
@@ -14,8 +13,8 @@ var router = express.Router();
 //新增活動時 路線是提交tID嗎  //新增活動時UID提交 所有成員的uID如何提交?
 let insert_activity=(db,req)=>{
   return new Promise((resolve, reject) => {
-    let sql="INSERT INTO `activity`(`uID`, `activity_name`, `activity_time`, `tID`, `warning_distance`, `warning_time`) VALUES (?,?,?,?,?,?)";
-    let param=[req.body.uID, req.body.activity_name, req.body.activity_time, req.body.tID, req.body.warning_distance, req.body.warning_time];
+    let sql="INSERT INTO `activity`(`uID`, `activity_name`, `tID`, `warning_distance`, `warning_time`) VALUES (?,?,?,?,?)";
+    let param=[req.body.uID, req.body.activity_name, req.body.tID, req.body.warning_distance, req.body.warning_time];
     db.query(sql,param,(err,result,fields)=>{
       if(err){
         reject(err);
@@ -67,19 +66,33 @@ let select_insert_activity_member=(db,req)=>{
     });
   });
 }
+let select_insert_activity=(db,aID)=>{
+  return new Promise((resolve, reject) => {
+    let sql="SELECT * FROM `activity` WHERE `aID`=?";
+    let param=[aID];
+    db.query(sql,param,(err,result,fields)=>{
+      if(err){
+        reject(err);
+      }else{
+        resolve(result);
+      }
+    })
+  });
+}
 router.post('/',async function(req, res, next) {
   try{
     if(req.session.account){
-        let results=await insert_activity(req.db,req);
-        let results_insert=await insert_activity_member(req.db,req,results);
-        let select_results=await select_insert_activity_member(req.db,req);
-        console.log("insert success");
-        res.send("insert success");
+        let insert_activity_results=await insert_activity(req.db,req);
+        let insert_activity_member_results=await insert_activity_member(req.db,req,insert_activity_results);
+        let select_insert_activity_member_results=await select_insert_activity_member(req.db,req);
+        let select_insert_activity_results=await select_insert_activity(req.db,insert_activity_results.insertId)
+        res.json(select_insert_activity_results[0]);
     }else{
       req.session.destroy();
       res.send("session fail");
     }
   }catch (error) {
+    res.json({"result" : "Fail to add activity"});
     console.log(error);
   }
 });
