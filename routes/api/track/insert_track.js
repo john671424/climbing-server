@@ -3,7 +3,6 @@ var router = express.Router();
 // {
 //     "uID":,
 //     "track_name":,
-//     "track_locate":,
 //     "start":,
 //     "finish":,
 //     "total_distance":,
@@ -65,7 +64,7 @@ router.post('/',async function(req, res, next) {
       res.json(select_track_results[0]);
     }else{
       req.session.destroy();
-      res.send("session fail");
+      res.json({"result" : "Session fail"});
     }
   }catch (error) {
     res.json({"result" : "Fail to add track"});

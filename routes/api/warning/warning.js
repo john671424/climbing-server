@@ -40,7 +40,7 @@ router.post('/',async function(req, res, next) {
       res.send("update success");
     }else{
       req.session.destroy();
-      res.send("session fail");
+      res.json({"result" : "Session fail"});
     }
   }catch (error) {
     console.log(error);

@@ -65,19 +65,18 @@ router.post('/',async function(req, res, next) {
         req.socket.io.on("connection", (socket) => {
           req.socket.io.in(member_results[0].account).emit("account", "hello "+member_results[0].account+" account: "+friend_results[0].account+" send friend request to you");
         });
-        console.log("send friend request");
-        res.send("send friend request");
+        res.json({"result" : "Send friend request"});
       }else{
         console.log("you are my friend");
-        res.send("you are my friend");
+        res.json({"result" : "You are my friend"});
       }
     }else{
-      console.log("no session");
-      res.send("no session");
+      req.session.destroy();
+      res.json({"result" : "Session fail"});
     }
   }catch (error) {
     console.log(error);
-    res.send("already friend");
+    res.json({"result" : "Already friend"});
   }
 });
 

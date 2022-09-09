@@ -89,7 +89,7 @@ router.post('/',async function(req, res, next) {
         res.json(select_insert_activity_results[0]);
     }else{
       req.session.destroy();
-      res.send("session fail");
+      res.json({"result" : "Session fail"});
     }
   }catch (error) {
     res.json({"result" : "Fail to add activity"});

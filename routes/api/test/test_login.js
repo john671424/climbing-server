@@ -1,3 +1,4 @@
+const { log } = require('debug/src/browser');
 var express = require('express');
 var router = express.Router();
 let select_account=(db,req)=>{
@@ -24,7 +25,22 @@ router.get('/',async function(req, res, next) {
     let results=await select_account(req.db,req);
     //let session_socket_results=await session_socket(req.db,req);
     if(req.session.account){
-      req.socket.io.on("connection", (socket) => {
+      req.socket.io.sockets.on("connection", async(socket) => {
+        //console.log(socket.rooms);
+        //console.log(socket.sids);
+        //console.log(req.socket.io);
+        console.log("join: "+req.session.account);
+        socket.join(req.session.account);
+        //console.log(socket.rooms);
+        //let roomUsers=await req.socket.io.in("john").fetchSockets();
+        const ids2 = await req.socket.io.in(req.session.account).allSockets();
+        const ids3 = await req.socket.io.in(req.session.account).allSockets();
+        console.log("account: "+req.session.account);
+        console.log(ids2);
+        console.log("rooms: ");
+        console.log(socket.rooms);
+        console.log("sids: ");
+        console.log(req.socket.io.sockets.adapter.sids);
         socket.on("private message", (anotherSocketId, msg) => {
           console.log(anotherSocketId);
           console.log(msg);

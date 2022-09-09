@@ -31,19 +31,20 @@ router.post('/',async function(req, res, next) {
   try{
     if([req.body.name,req.body.account,req.body.password,req.body.email,req.body.phone].some(function(item,index,array){return item == "";})){
       console.log("some null");//空值
-      res.send("some null");
+      res.json({"result" : "Some null"});
     }else{
       let results=await signupcheck(req.db,req);//帳號重複判斷
       if(results.length!=0){
         console.log("repeat account");
-        res.send("repeat account");
+        res.json({"result" : "Repeat account"});
       }else{
         let results=await signupmember(req.db,req);//註冊
         console.log("create account");
-        res.send("create account");
+        res.json({"result" : "Create account"});
       }
     }
   } catch (error) {
+    res.json({"result" : "Fail to create account"});
     console.log(error);
   }
 });

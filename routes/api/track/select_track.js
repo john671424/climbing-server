@@ -20,14 +20,13 @@ router.post('/',async function(req, res, next) {
   try{
     if(req.session.account){
       let results_select=await select_track(req.db,req);
-      console.log("select success");
-      res.send("select success");
-      console.log(results);
+      res.json(results);
     }else{
       req.session.destroy();
-      res.send("session fail");
+      res.json({"result" : "Session fail"});
     }
   }catch (error) {
+    res.json({"result" : "Fail to select track"});
     console.log(error);
   }
 });

@@ -30,6 +30,8 @@ var login_memberRouter =  require('./routes/api/login_member');
 var insert_activityRouter =  require('./routes/api/activity/insert_activity');
 var start_activityRouter =  require('./routes/api/activity/start_activity');
 var finish_activityRouter =  require('./routes/api/activity/finish_activity');
+var delete_activityRouter =  require('./routes/api/activity/delete_activity');
+var select_all_activityRouter =  require('./routes/api/activity/select_all_activity');
 //friend
 var check_friendRouter =  require('./routes/api/friend/check_friend');
 var insert_friendRouter =  require('./routes/api/friend/insert_friend');
@@ -38,6 +40,9 @@ var delete_friendRouter =  require('./routes/api/friend/delete_friend');
 //track
 var insert_trackRouter =  require('./routes/api/track/insert_track');
 var select_trackRouter =  require('./routes/api/track/select_track');
+var update_trackRouter =  require('./routes/api/track/update_track');
+var delete_trackRouter =  require('./routes/api/track/delete_track');
+var select_all_trackRouter =  require('./routes/api/track/select_all_track');
 //warning
 var warning_Router =  require('./routes/api/warning/warning');
 //AR
@@ -95,8 +100,10 @@ app.use('/api/signup_member', signup_memberRouter);
 app.use('/api/login_member', login_memberRouter);
 //activity
 app.use('/api/activity/insert_activity', insert_activityRouter);
-app.use('/api/activity/start_activity', start_activityRouter);//repairing
-app.use('/api/activity/finish_activity', finish_activityRouter);//repairing
+app.use('/api/activity/start_activity', start_activityRouter);
+app.use('/api/activity/finish_activity', finish_activityRouter);
+app.use('/api/activity/delete_activity', delete_activityRouter);
+app.use('/api/activity/select_all_activity', select_all_activityRouter);
 //friend
 app.use('/api/friend/check_friend', check_friendRouter);
 app.use('/api/friend/insert_friend', insert_friendRouter);
@@ -105,6 +112,9 @@ app.use('/api/friend/delete_friend', delete_friendRouter);
 //track
 app.use('/api/track/insert_track', insert_trackRouter);
 app.use('/api/track/select_track', select_trackRouter);
+app.use('/api/track/update_track', update_trackRouter);
+app.use('/api/track/delete_track', delete_trackRouter);
+app.use('/api/track/select_all_track', select_all_trackRouter);
 //warning
 app.use('/api/warning/warning', warning_Router);//repairing
 //AR

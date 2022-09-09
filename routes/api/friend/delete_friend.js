@@ -62,17 +62,16 @@ router.post('/',async function(req, res, next) {
         req.socket.io.on("connection", (socket) => {
           req.socket.io.in(member_results[0].account).emit("account", "hello "+member_results[0].account+" account: "+friend_results[0].account+" delete you");
         });
-        console.log("delete success");
-        res.send("delete success");
+        res.json({"result" : "Delete success"});
       }else{
-        console.log("you are my friend");
-        res.send("you are my friend");
+        res.json({"result" : "You are my friend"});
       }
     }else{
       req.session.destroy();
-      res.send("session fail");
+      res.json({"result" : "Session fail"});
     }
   }catch (error) {
+    res.json({"result" : "Fail to delete friend"});
     console.log(error);
   }
 });

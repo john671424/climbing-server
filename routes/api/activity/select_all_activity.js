@@ -5,9 +5,8 @@ var router = express.Router();
 // }
 let select_track=(db,req)=>{
   return new Promise((resolve, reject) => {
-    let sql="SELECT * FROM `track` WHERE `uid`=?";
-    let param=[req.body.uID];
-    db.query(sql,param,(err,result,fields)=>{
+    let sql="SELECT * FROM `activity`";
+    db.query(sql,(err,result,fields)=>{
       if(err){
         reject(err);
       }else{
@@ -20,14 +19,13 @@ router.post('/',async function(req, res, next) {
   try{
     if(req.session.account){
       let results_select=await select_track(req.db,req);
-      console.log("select success");
-      res.send("select success");
-      console.log(results);
+      res.json(results_select);
     }else{
       req.session.destroy();
-      res.json({"result" : "session fail"});
+      res.json({"result" : "Session fail"});
     }
   }catch (error) {
+    res.json({"result" : "Fail to query all activities"});
     console.log(error);
   }
 });

@@ -21,13 +21,13 @@ router.post('/',async function(req, res, next) {
   try{
     if(req.session.account){
       let results=await select_friend(req.db,req);
-      console.log("select success");
       res.json(results);
     }else{
       req.session.destroy();
-      res.send("session fail");
+      res.json({"result" : "Session fail"});
     }
   }catch (error) {
+    res.json({"result" : "Fail to select friend"});
     console.log(error);
   }
 });

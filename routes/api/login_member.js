@@ -27,15 +27,14 @@ router.post('/',async function(req, res, next) {
         socket.join(req.session.account);//加入名為 account 的 socket room 作為專門通知 client 的管道
         req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world");
       });
-      
       res.json(results[0]);
     }else{
       req.session.destroy();
-      res.send("login fail");
+      res.json({"result" : "Login fail"});
     }
   } catch (error) {
     req.session.destroy();
-    res.send("login failed");
+    res.json({"result" : "Login fail"});
     console.log(error);
   }
 });
