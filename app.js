@@ -8,6 +8,8 @@ var socket = require('./socket_api');
 require('dotenv').config();
 var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
+const fileUpload = require("express-fileupload");
+
 const options ={
   connectionLimit: 10,
   password: process.env.DB_PWD,
@@ -32,6 +34,7 @@ var start_activityRouter =  require('./routes/api/activity/start_activity');
 var finish_activityRouter =  require('./routes/api/activity/finish_activity');
 var delete_activityRouter =  require('./routes/api/activity/delete_activity');
 var select_all_activityRouter =  require('./routes/api/activity/select_all_activity');
+var select_specific_activityRouter =  require('./routes/api/activity/select_specific_activity');
 //friend
 var check_friendRouter =  require('./routes/api/friend/check_friend');
 var insert_friendRouter =  require('./routes/api/friend/insert_friend');
@@ -43,12 +46,21 @@ var select_trackRouter =  require('./routes/api/track/select_track');
 var update_trackRouter =  require('./routes/api/track/update_track');
 var delete_trackRouter =  require('./routes/api/track/delete_track');
 var select_all_trackRouter =  require('./routes/api/track/select_all_track');
+var select_specific_trackRouter =  require('./routes/api/track/select_specific_track');
+var download_trackRouter =  require('./routes/api/track/download_track');
+var upload_trackRouter =  require('./routes/api/track/upload_track');
 //warning
 var warning_Router =  require('./routes/api/warning/warning');
 //AR
 var AR_Router =  require('./routes/api/AR/AR');
+//member
+var update_activity_memberRouter =  require('./routes/api/member/update_activity_member');
+var update_distance_time_memberRouter =  require('./routes/api/member/update_distance_time_member');
+var update_track_memberRouter =  require('./routes/api/member/update_track_member');
 //test
-var TEST_Router =  require('./routes/api/test/test_login.js');
+var TEST_Router =  require('./routes/api/test/test_login');
+var TEST_download_Router =  require('./routes/api/test/test_download');
+var TEST_upload_Router =  require('./routes/api/test/test_upload');
 
 var app = express();
 
@@ -78,6 +90,9 @@ app.use(function(req,res,next){
   req.socket=socket;
   next();
 });
+app.use(
+  fileUpload()
+);
 pool.query('SELECT 1+1 AS solution',function(error,results,fields){
   if(error) throw error;
   console.log('ok');
@@ -104,6 +119,7 @@ app.use('/api/activity/start_activity', start_activityRouter);
 app.use('/api/activity/finish_activity', finish_activityRouter);
 app.use('/api/activity/delete_activity', delete_activityRouter);
 app.use('/api/activity/select_all_activity', select_all_activityRouter);
+app.use('/api/activity/select_specific_activity', select_specific_activityRouter);
 //friend
 app.use('/api/friend/check_friend', check_friendRouter);
 app.use('/api/friend/insert_friend', insert_friendRouter);
@@ -115,12 +131,20 @@ app.use('/api/track/select_track', select_trackRouter);
 app.use('/api/track/update_track', update_trackRouter);
 app.use('/api/track/delete_track', delete_trackRouter);
 app.use('/api/track/select_all_track', select_all_trackRouter);
+app.use('/api/track/select_specific_track', select_specific_trackRouter);
+app.use('/api/track/download_track', download_trackRouter);
+app.use('/api/track/upload_track', upload_trackRouter);
 //warning
-app.use('/api/warning/warning', warning_Router);//repairing
-//AR
+app.use('/api/warning/warning', warning_Router);//building
 app.use('/api/AR/AR', AR_Router);//building
+//member
+app.use('/api/member/update_activity_member',update_activity_memberRouter);
+app.use('/api/member/update_distance_time_member',update_distance_time_memberRouter);
+app.use('/api/member/update_track_member',update_track_memberRouter);
 //test
 app.use('/api/test/test_login', TEST_Router);//building
+app.use('/api/test/test_download', TEST_download_Router);//building
+app.use('/api/test/test_upload', TEST_upload_Router);//building
 
 
 // catch 404 and forward to error handler
