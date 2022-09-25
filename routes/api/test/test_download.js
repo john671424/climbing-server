@@ -8,7 +8,7 @@ router.get('/',async function (req, res, next) {
     console.log('single file');
     console.log(folderPath);
     // Download function provided by express
-    res.download(folderPath+"/"+req.body.z+"/"+req.body.x+"/"+req.body.y, function(err) {
+    res.download(folderPath+"/"+req.query.z+"/"+req.query.x+"/"+req.query.y+".png", function(err) {
         if(err) {
             console.log(err);
         }
