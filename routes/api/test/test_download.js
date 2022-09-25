@@ -1,12 +1,14 @@
+const { log } = require('debug/src/browser');
 var express = require('express');
 var router = express.Router();
-const folderPath = "C:\\project\\files\\";
+const path = require('path');
+const folderPath = path.resolve('./')+"/files/Puli";
 router.get('/',async function (req, res, next) {
   try {
     console.log('single file');
-     
+    console.log(folderPath);
     // Download function provided by express
-    res.download(folderPath+'/john.txt', function(err) {
+    res.download(folderPath+"/"+req.body.z+"/"+req.body.x+"/"+req.body.y, function(err) {
         if(err) {
             console.log(err);
         }
