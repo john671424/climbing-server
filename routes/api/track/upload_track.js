@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
+const path =require('path');
 // {
-//     "uID":"1",
+//     "tID":"1"
 // }
-let update_track_locate=(db,req)=>{
+let update_track_locate=(db,req,locate)=>{
   return new Promise((resolve, reject) => {
     let sql="UPDATE `track` SET `track_locate`=? WHERE `tID`=?";
-    let param=["john?",req.body.tID];
+    let param=[locate,req.body.tID];
     db.query(sql,param,(err,result,fields)=>{
       if(err){
         reject(err);
@@ -22,14 +23,15 @@ router.post('/',async function(req, res, next) {
       if (!req.files) {
         return res.status(400).send("No files were uploaded.");
       }
-      const file = req.files.myFile;
-      const path = "C:\\project\\files\\"+file.name;
-      await file.mv(path,(err) => {
+      const file = req.files.files;
+      const filepath = path.resolve('./')+"/files/tracks/"+file.name;
+      const locate = "tracks/"+req.body.filename;
+      await file.mv(filepath,(err) => {
         if (err) {
           return res.status(500).send(err);
         }
-        let update_track_locate_results=update_track_locate(req.db,req);
-        return res.send({ status: "success", path: path });
+        let update_track_locate_results=update_track_locate(req.db,req,locate);
+        return res.send({ status: "succe:ss", path: filepath });
       });
     }else{
       req.session.destroy();

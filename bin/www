@@ -7,6 +7,8 @@ var app = require('../app');
 var debug = require('debug')('project:server');
 var http = require('http');
 const { log } = require('console');
+//const {Server} = require( "socket.io" );//test
+const { instrument } = require("@socket.io/admin-ui");//test
 let socket_api = require("../socket_api");
 
 /**
@@ -18,7 +20,23 @@ app.set('port', port);
  * Create HTTP server.
  */
 var server = http.createServer(app);
-socket_api.io.attach(server);
+socket_api.io.attach(server,{
+  cors: {
+    origin: ["https://admin.socket.io"],
+    credentials: true
+  }
+});
+
+// const io = new Server(server, {
+//   cors: {
+//     origin: ["https://admin.socket.io"],
+//     credentials: true
+//   }
+// });
+
+instrument(socket_api.io, {
+  auth: false
+});
 /**
  * Listen on provided port, on all network interfaces.
  */

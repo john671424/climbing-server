@@ -17,12 +17,11 @@ let select_track=(db,req)=>{
     })
   });
 }
-const folderPath = "C:\\project\\files\\";
 router.post('/',async function(req, res, next) {
   try{
     if(req.session.account){
       let select_track_results=await select_track(req.db,req);
-      res.download(folderPath+select_track_results[0].track_locate, function(err) {
+      res.download(path.resolve('./')+"/files/"+select_track_results[0].track_locate, function(err) {
         console.log("downloading");
         if(err) {
             console.log(err);
@@ -39,4 +38,3 @@ router.post('/',async function(req, res, next) {
 });
 
 module.exports = router;
-

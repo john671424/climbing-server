@@ -10,6 +10,9 @@ var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 const fileUpload = require("express-fileupload");
 
+
+
+
 const options ={
   connectionLimit: 10,
   password: process.env.DB_PWD,
@@ -62,6 +65,7 @@ var select_uid_memberRouter =  require('./routes/api/member/select_uid_member');
 var TEST_Router =  require('./routes/api/test/test_login');
 var TEST_download_Router =  require('./routes/api/test/test_download');
 var TEST_upload_Router =  require('./routes/api/test/test_upload');
+const { log } = require('console');
 
 var app = express();
 
@@ -75,6 +79,15 @@ app.use(session({
             httpOnly: false},
   store: sessionStore
 }))
+app.use(function(req,res,next){
+  socket.io.use((socket, next) => {
+    socket.sessionID = req.session.account;
+    //socket.userID = session.userID;
+    socket.username = session.account;
+    next();
+  });
+  next();
+});
 
 var pool = sql.createPool({
   user: process.env.DB_USER,
@@ -91,9 +104,11 @@ app.use(function(req,res,next){
   req.socket=socket;
   next();
 });
+
 app.use(
   fileUpload()
 );
+
 pool.query('SELECT 1+1 AS solution',function(error,results,fields){
   if(error) throw error;
   console.log('ok');

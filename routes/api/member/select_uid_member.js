@@ -6,7 +6,7 @@ var router = express.Router();
 //以到 server 時間為主
   let select_member=(db,req)=>{
     return new Promise((resolve, reject) => {
-      let sql="SELECT `account`,`name` FROM `member` WHERE `uID`=?";
+      let sql="SELECT `uid`,`account`,`name` FROM `member` WHERE `uID`=?";
       let param=[req.body.uID];
       db.query(sql,param,(err,result,fields)=>{
         if(err){

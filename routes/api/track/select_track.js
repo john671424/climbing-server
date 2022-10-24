@@ -20,7 +20,7 @@ router.post('/',async function(req, res, next) {
   try{
     if(req.session.account){
       let results_select=await select_track(req.db,req);
-      res.json(results);
+      res.json(results_select);
     }else{
       req.session.destroy();
       res.json({"result" : "Session fail"});
