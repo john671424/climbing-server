@@ -10,7 +10,7 @@ var router = express.Router();
 // }
 let insert_track=(db,req)=>{
   return new Promise((resolve, reject) => {
-    let sql="INSERT INTO `track`(`uID`, `track_name`, `start`, `finish`, `total_distance`,`track_type`) VALUES (?,?,?,?,?,?,?)";
+    let sql="INSERT INTO `track`(`uID`, `track_name`, `start`, `finish`, `total_distance`,`track_type`) VALUES (?,?,?,?,?,?)";
     let param=[req.body.uID, req.body.track_name, req.body.start, req.body.finish, req.body.total_distance, req.body.track_type];
     db.query(sql,param,(err,result,fields)=>{
       if(err){
