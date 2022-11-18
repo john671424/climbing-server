@@ -1,13 +1,14 @@
 const { log } = require('debug/src/browser');
 var express = require('express');
 var router = express.Router();
+const path =require('path');
 // {
 //     "tID":"1",
 // }
 let select_track=(db,req)=>{
   return new Promise((resolve, reject) => {
     let sql="SELECT * FROM `track` where `tID`=?";
-    let param=[req.body.tID];
+    let param=[req.query.tid];
     db.query(sql,param,(err,result,fields)=>{
       if(err){
         reject(err);
@@ -17,7 +18,7 @@ let select_track=(db,req)=>{
     })
   });
 }
-router.post('/',async function(req, res, next) {
+router.get('/',async function(req, res, next) {
   try{
     if(req.session.account){
       let select_track_results=await select_track(req.db,req);

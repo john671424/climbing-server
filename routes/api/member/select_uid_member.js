@@ -3,7 +3,7 @@ var router = express.Router();
 // {
 //     "uID":"9"
 // }
-//以到 server 時間為主
+
   let select_member=(db,req)=>{
     return new Promise((resolve, reject) => {
       let sql="SELECT `uid`,`account`,`name` FROM `member` WHERE `uID`=?";

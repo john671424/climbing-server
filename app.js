@@ -36,6 +36,7 @@ var insert_activityRouter =  require('./routes/api/activity/insert_activity');
 var start_activityRouter =  require('./routes/api/activity/start_activity');
 var finish_activityRouter =  require('./routes/api/activity/finish_activity');
 var delete_activityRouter =  require('./routes/api/activity/delete_activity');
+var update_activityRouter =  require('./routes/api/activity/update_activity');
 var select_all_activityRouter =  require('./routes/api/activity/select_all_activity');
 var select_specific_activityRouter =  require('./routes/api/activity/select_specific_activity');
 //friend
@@ -139,6 +140,7 @@ app.use('/api/activity/insert_activity', insert_activityRouter);
 app.use('/api/activity/start_activity', start_activityRouter);
 app.use('/api/activity/finish_activity', finish_activityRouter);
 app.use('/api/activity/delete_activity', delete_activityRouter);
+app.use('/api/activity/update_activity', update_activityRouter);
 app.use('/api/activity/select_all_activity', select_all_activityRouter);
 app.use('/api/activity/select_specific_activity', select_specific_activityRouter);
 //friend

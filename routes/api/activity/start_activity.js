@@ -53,7 +53,7 @@ let select_insert_activity_member=async(db,req,select_activity_member_results,se
           }
           req.socket.io.to(result[0].account).emit("account",
           {
-            "ctlmsg":"activity update", 
+            "ctlmsg":"activity start", 
             "activity_msg":select_activity_results[0].aID+" "+select_activity_results[0].activity_name
         });
           resolve(result);
