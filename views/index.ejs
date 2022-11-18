@@ -7,6 +7,15 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <form id="send-form" method="POST" onsubmit="return firstFunction()">
+      <input type="text" name="channel" id="channel" placeholder="頻道">
+      <input type="text" name="msg" id="msg" placeholder="msg">
+      <input type="text" name="account_msg" id="account_msg" placeholder="account_msg">
+      <input type="text" name="activity_msg" id="activity_msg" placeholder="activity_msg">
+      <input type="text" name="location_msg" id="location_msg" placeholder="location_msg">
+      <input type="text" name="friend_msg" id="friend_msg" placeholder="friend_msg">
+      <input type="submit" id="submit" value="送出">
+    </form>
     <script src="/socket.io/socket.io.js">
     </script>
 <script>
@@ -16,13 +25,37 @@
   socket.on("connect", (arg) => {
     socketid=socket.id; // true
     console.log(socketid);
-    socket.volatile.emit("private message",socketid,"private message already send");
   });
-  socket.on('private message',(socketid,msg) => {
+  socket.on('account',(msg) => {
+    console.log("account:");
     console.log(msg);
-    console.log("private message said:  "+socketid+"says: "+msg); // world
+    console.log("account said:  ctlmsg:"+msg.ctlmsg+" account_msg:"+msg.account_msg+" activity_msg:"+msg.activity_msg+" friend_msg:"+msg.friend_msg); // world
+    if(msg.ctlmsg=="join socket room"){
+      socket.volatile.emit("ctlmsg",{"ctlmsg":msg.ctlmsg,"account_msg":msg.account_msg,"activity_msg":msg.activity_msg});
+    }
   });
-  socket.volatile.emit("private message",socketid,"private message");
+  socket.on('activity',(msg) => {
+    console.log("activity said:  "+msg.account_msg+" 2 "+msg.activity_msg+" 3 "+msg.location_msg);
+  });
+  var btn = document.getElementById("submit");
+  btn.onclick = firstFunction;
+  function firstFunction() {
+    alert("The first function executed successfully!");
+    var channel = document.getElementById("channel").value;
+    var msg = document.getElementById("msg").value;
+    var account_msg = document.getElementById("account_msg").value;
+    var activity_msg = document.getElementById("activity_msg").value;
+    var location_msg = document.getElementById("location_msg").value;
+    var friend_msg = document.getElementById("friend_msg").value;
+    console.log(channel);
+    console.log(msg);
+    console.log(account_msg);
+    console.log(activity_msg);
+    console.log(location_msg);
+    console.log(friend_msg);
+    socket.volatile.emit(channel,{"ctlmsg":msg,"account_msg":account_msg,"activity_msg":activity_msg,"location_msg":location_msg,"friend_msg":friend_msg});
+    return false;
+  }
 </script>
   </body>
 </html>

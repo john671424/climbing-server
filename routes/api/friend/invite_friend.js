@@ -7,21 +7,8 @@ var router = express.Router();
 // }
 let insert_friend=(db, req, uID1, uID2)=>{
   return new Promise((resolve, reject) => {
-    let sql="INSERT INTO `friend`(`uID1`,`uID2`) VALUES (?,?)";
-    let param=[uID1, uID2];
-    db.query(sql,param,(err,result,fields)=>{
-      if(err){
-        reject(err);
-      }else{
-        resolve(result);
-      }
-    })
-  });
-}
-let update_friend=(db, req, uID1, uID2)=>{
-  return new Promise((resolve, reject) => {
-    let sql="UPDATE `friend` SET `status`=0 where `uID1`=? and `uID2`=?";
-    let param=[uID1, uID2];
+    let sql="INSERT INTO `friend`(`uID1`,`uID2`,`status`) VALUES (?,?,?)";
+    let param=[uID1, uID2,1];//1代表尚未接受邀請 uID1 invite uID2 
     db.query(sql,param,(err,result,fields)=>{
       if(err){
         reject(err);
@@ -53,9 +40,8 @@ router.post('/',async function(req, res, next) {
     let member_results=await select_member(req.db,req);
     if(req.session.account && member_results[0].account==req.session.account){
       if(req.body.uID1 != req.body.uID2){
-        let results=await update_friend(req.db,req,req.body.uID1,req.body.uID2);
-        let results2=await insert_friend(req.db,req,req.body.uID2,req.body.uID1);
-        res.json({"result" : "Insert success"});
+        let results=await insert_friend(req.db,req,req.body.uID1,req.body.uID2);
+        res.json({"result" : "Invite success"});
       }else{
         res.json({"result" : "You are my friend"});
       }
@@ -64,7 +50,7 @@ router.post('/',async function(req, res, next) {
       res.json({"result" : "Session fail"});
     }
   }catch (error) {
-    res.json({"result" : "Fail to insert friend"});
+    res.json({"result" : "Fail to invite friend"});
     console.log(error);
   }
 });

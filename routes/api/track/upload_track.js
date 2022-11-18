@@ -25,7 +25,7 @@ router.post('/',async function(req, res, next) {
       }
       const file = req.files.files;
       const filepath = path.resolve('./')+"/files/tracks/"+file.name;
-      const locate = "tracks/"+req.body.filename;
+      const locate = "tracks/"+file.name;
       await file.mv(filepath,(err) => {
         if (err) {
           return res.status(500).send(err);

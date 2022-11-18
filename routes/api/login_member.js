@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+let name;
 let select_account=(db,req)=>{
   return new Promise((resolve, reject) => {
     let sql="SELECT * FROM `member` WHERE `account`=? AND `password`=?";
@@ -22,10 +23,14 @@ router.post('/',async function(req, res, next) {
   try{
     let results=await select_account(req.db,req);
     if(req.session.account){
+      name=req.session.account;
       req.socket.io.on("connection", (socket) => {
-        socket.nickname = req.session.account;
-        socket.join(req.session.account);//加入名為 account 的 socket room 作為專門通知 client 的管道
-        req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world");
+        //socket.nickname = req.session.account;
+        if (name==req.session.account){
+          socket.join(req.session.account);//加入名為 account 的 socket room 作為專門通知 client 的管道
+          socket.account=req.session.account;
+          req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world");
+        }
       });
       res.json(results[0]);
     }else{

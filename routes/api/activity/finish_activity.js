@@ -1,3 +1,4 @@
+const { log } = require('debug/src/browser');
 var express = require('express');
 var router = express.Router();
 // {
@@ -30,7 +31,7 @@ let select_activity_time=(db,start_time,finish_time)=>{
     })
   });
 }
-let select_activity=(db,req,time)=>{
+let select_activity=(db,req)=>{
     return new Promise((resolve, reject) => {
       let sql="SELECT * FROM `activity` WHERE `aID`=?";
       let param=[req.body.aID];
@@ -60,6 +61,45 @@ let update_finish_activity_time=(db,req)=>{
     })
   });
 }
+let select_activity_member=(db,req)=>{
+  return new Promise((resolve, reject) => {
+      let sql="SELECT * FROM `activity_member` WHERE `aID`=?";
+      let param=[req.body.aID];
+      db.query(sql,param,(err,result,fields)=>{
+        if(err){
+          reject(err);
+        }else{
+          resolve(result);
+        }
+      })
+  });
+}
+let select_uid=(db,uID)=>{
+  return new Promise((resolve, reject) => {
+      let sql="SELECT * FROM `member` WHERE `uID`=?";
+      let param=[uID];
+      db.query(sql,param,(err,result,fields)=>{
+        if(err){
+          reject(err);
+        }else{
+          resolve(result);
+        }
+      })
+  });
+}
+let update_activity_member=(db,req)=>{
+  return new Promise((resolve, reject) => {
+      let sql="UPDATE `activity_member` SET `status`=0 where `aID`=?";
+      let param=[req.body.aID];
+      db.query(sql,param,(err,result,fields)=>{
+        if(err){
+          reject(err);
+        }else{
+          resolve(result);
+        }
+      })
+  });
+}
 router.post('/',async function(req, res, next) {
   try{
     if(req.session.account){
@@ -68,6 +108,18 @@ router.post('/',async function(req, res, next) {
       let select_activity_time_result=await select_activity_time(req.db,select_activity_results[0].start_activity_time,select_activity_results[0].finish_activity_time);
       let update_activity_time_results=await update_activity_time(req.db,req,select_activity_time_result[0].time);
       let select_activity_results_2=await select_activity(req.db,req);
+      let select_activity_member_result =await select_activity_member(req.db,req);
+      let update_activity_member_result =await update_activity_member(req.db,req);
+      req.socket.io.socketsLeave(select_activity_results[0].aID+" "+select_activity_results[0].activity_name);
+      select_activity_member_result.forEach(async element =>{
+        let select_uid_result =await select_uid(req.db,element.uID);
+        let select_activity_result =await select_activity(req.db,req);
+        req.socket.io.to(select_uid_result[0].account).emit("account",{
+          "ctlmsg":"leave activity room",
+          "activity_msg":select_activity_result[0].aID+" "+select_activity_result[0].activity_name,
+          "account_msg":select_uid_result[0].account
+        })
+      });
       res.json(select_activity_results_2[0])
     }else{
       req.session.destroy();

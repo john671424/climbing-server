@@ -3,13 +3,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var sql = require('mysql');
+//var sql = require('mysql');
 var socket = require('./socket_api');
 require('dotenv').config();
 var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 const fileUpload = require("express-fileupload");
-
+var sql = require('./mysql_api');
 
 
 
@@ -43,6 +43,7 @@ var check_friendRouter =  require('./routes/api/friend/check_friend');
 var insert_friendRouter =  require('./routes/api/friend/insert_friend');
 var select_friendRouter =  require('./routes/api/friend/select_friend');
 var delete_friendRouter =  require('./routes/api/friend/delete_friend');
+var invite_friendRouter =  require('./routes/api/friend/invite_friend');
 //track
 var insert_trackRouter =  require('./routes/api/track/insert_track');
 var select_trackRouter =  require('./routes/api/track/select_track');
@@ -65,6 +66,7 @@ var select_uid_memberRouter =  require('./routes/api/member/select_uid_member');
 var TEST_Router =  require('./routes/api/test/test_login');
 var TEST_download_Router =  require('./routes/api/test/test_download');
 var TEST_upload_Router =  require('./routes/api/test/test_upload');
+var TEST_start_activity_Router =  require('./routes/api/test/test_start_activity');
 const { log } = require('console');
 
 var app = express();
@@ -83,21 +85,22 @@ app.use(function(req,res,next){
   socket.io.use((socket, next) => {
     socket.sessionID = req.session.account;
     //socket.userID = session.userID;
-    socket.username = session.account;
+    socket.account = req.session.account;
+    //req.socket.io.join(req.session.account);
     next();
   });
   next();
 });
 
-var pool = sql.createPool({
-  user: process.env.DB_USER,
-  password: process.env.DB_PWD,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DB,
-  connectionLimit : 10
-});
+// var pool = sql.createPool({
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PWD,
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_DB,
+//   connectionLimit : 10
+// });
 app.use(function(req,res,next){
-  req.db=pool;
+  req.db=sql.pool;
   next();
 });
 app.use(function(req,res,next){
@@ -106,10 +109,12 @@ app.use(function(req,res,next){
 });
 
 app.use(
-  fileUpload()
+  fileUpload({
+    defParamCharset: "utf8"
+  })
 );
 
-pool.query('SELECT 1+1 AS solution',function(error,results,fields){
+sql.pool.query('SELECT 1+1 AS solution',function(error,results,fields){
   if(error) throw error;
   console.log('ok');
 });
@@ -141,6 +146,7 @@ app.use('/api/friend/check_friend', check_friendRouter);
 app.use('/api/friend/insert_friend', insert_friendRouter);
 app.use('/api/friend/select_friend', select_friendRouter);
 app.use('/api/friend/delete_friend', delete_friendRouter);
+app.use('/api/friend/invite_friend', invite_friendRouter);
 //track
 app.use('/api/track/insert_track', insert_trackRouter);
 app.use('/api/track/select_track', select_trackRouter);
@@ -162,6 +168,7 @@ app.use('/api/member/select_uid_member',select_uid_memberRouter);
 app.use('/api/test/test_login', TEST_Router);//building
 app.use('/api/test/test_download', TEST_download_Router);//building
 app.use('/api/test/test_upload', TEST_upload_Router);//building
+app.use('/api/test/test_start_activity', TEST_start_activity_Router);//building
 
 
 // catch 404 and forward to error handler

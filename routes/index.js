@@ -1,3 +1,4 @@
+const { log } = require('debug/src/browser');
 var express = require('express');
 // var http = require('http').Server(app);
 // var io = require('socket.io')(http);
@@ -48,6 +49,7 @@ router.get('/',async function (req, res, next) {
       }
       
     });
+
     res.render('index', { title: 'Express1' });
   } catch (error) {
     res.render('index', { title: 'Error' });

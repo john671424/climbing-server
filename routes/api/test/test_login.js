@@ -1,7 +1,6 @@
 const { log } = require('debug/src/browser');
 var express = require('express');
 var router = express.Router();
-let socketMap={};
 
 let name;
 let select_account=(db,req)=>{
@@ -26,22 +25,34 @@ router.get('/',async function(req, res, next) {
   try{
     let counter=1;
     let results=await select_account(req.db,req);
+    // req.socket.io.on("connection", (socket) => {
+    //   socket.on('ctlmsg',(msg) => {
+    //     if(msg.ctlmsg=="join socket room" ){
+    //       socket.join(msg.activity_msg);
+    //     }
+    //     if(msg.ctlmsg=="leave socket room" ){
+    //       socket.leave(msg.activity_msg);
+    //     }
+    //     if(msg.ctlmsg=="broadcast location"){
+    //       console.log("I am in");
+    //       console.log(msg.location_msg);
+    //       socket.to(msg.activity_msg).emit("activity",msg.account_msg,msg.activity_msg,msg.location_msg);
+    //     }
+    //   });
+    //   socket.on( "test", (msg)=> {
+    //     console.log( "A "+msg );
+    // });
+    // });
     if(req.session.account){
       name=req.session.account;
-      
-      req.socket.io.sockets.on("connection", (socket) => {
-        
-        if (name==req.session.account && counter==1) {
-          console.log(socket.sessionID);
+      req.socket.io.on("connection", (socket) => {
+        // console.log(socket.handshake.auth.username);
+        // console.log(socket.sessionID);
+        // console.log(socket.username);
+        if (name==req.session.account  /*counter==1*/) {
           socket.join(req.session.account);
-          console.log(socket.handshake.auth.sessionID);
-          console.log("join "+req.session.account+" room");
-          socket.on("private message", (anotherSocketId, msg) => {
-            console.log(req.session.account+" send message");
-            req.socket.io.sockets.to(anotherSocketId).emit("private message", socket.id, msg);
-            counter--;
-          });
-          req.socket.io.sockets.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world");
+          socket.account=req.session.account;
+          req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world");
         }
       });
       res.render('index', { title: req.session.account });
