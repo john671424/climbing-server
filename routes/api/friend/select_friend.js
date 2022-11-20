@@ -6,7 +6,7 @@ var router = express.Router();
 
 let select_friend=(db,req)=>{
   return new Promise((resolve, reject) => {
-    let sql="SELECT * FROM `friend` WHERE `uID1`=?";
+    let sql="SELECT * FROM `friend` WHERE `uID1`=? and `status`=0";
     let param=[req.body.uID];
     db.query(sql,param,(err,result,fields)=>{
       if(err){
