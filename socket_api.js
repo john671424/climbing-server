@@ -30,17 +30,16 @@ io.on( "connection", function( socket ) {
           "location_msg":msg.location_msg});
         }
         if(msg.ctlmsg=="friend request"){
-          console.log("friend respond");
-          socket.in(msg.frined_msg).emit("account",
+          socket.in(msg.friend_msg).emit("account",
           {"ctlmsg":msg.ctlmsg,
           "account_msg":msg.account_msg,
           "friend_msg":msg.friend_msg});
         //account 想加 friend's account 為朋友
         }
         if(msg.ctlmsg=="friend response"){
-          socket.in(msg.frined_msg).emit("account",
+          socket.in(msg.friend_msg).emit("account",
           {"ctlmsg":msg.ctlmsg,
-          "frined_msg":msg.friend_msg,
+          "friend_msg":msg.friend_msg,
           "account_msg":msg.account_msg});
         //account 想加 friend's account 為朋友
         }

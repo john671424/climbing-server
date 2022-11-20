@@ -7,8 +7,8 @@ var router = express.Router();
 // }
 let insert_friend=(db, req, uID1, uID2)=>{
   return new Promise((resolve, reject) => {
-    let sql="INSERT INTO `friend`(`uID1`,`uID2`) VALUES (?,?)";
-    let param=[uID1, uID2];
+    let sql="INSERT INTO `friend`( `uID1`, `uID2`) VALUES ((SELECT `uID` from `member` where `account`=?),?)";
+    let param=[req.body.friend,req.body.uID1];
     db.query(sql,param,(err,result,fields)=>{
       if(err){
         reject(err);
@@ -20,8 +20,8 @@ let insert_friend=(db, req, uID1, uID2)=>{
 }
 let update_friend=(db, req, uID1, uID2)=>{
   return new Promise((resolve, reject) => {
-    let sql="UPDATE `friend` SET `status`=0 where `uID1`=? and `uID2`=?";
-    let param=[uID1, uID2];
+    let sql="UPDATE `friend` SET `status`=0 where `uID1`=? and `uID2`=(SELECT `uID` from `member` where `account`=?)";
+    let param=[uID1, req.body.friend];
     db.query(sql,param,(err,result,fields)=>{
       if(err){
         reject(err);

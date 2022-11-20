@@ -61,6 +61,7 @@ var warning_Router =  require('./routes/api/warning/warning');
 var update_activity_memberRouter =  require('./routes/api/member/update_activity_member');
 var update_distance_time_memberRouter =  require('./routes/api/member/update_distance_time_member');
 var update_track_memberRouter =  require('./routes/api/member/update_track_member');
+var update_memberRouter =  require('./routes/api/member/update_member');
 var select_uid_memberRouter =  require('./routes/api/member/select_uid_member');
 //test
 var TEST_Router =  require('./routes/api/test/test_login');
@@ -164,6 +165,7 @@ app.use('/api/warning/warning', warning_Router);//building
 app.use('/api/member/update_activity_member',update_activity_memberRouter);
 app.use('/api/member/update_distance_time_member',update_distance_time_memberRouter);
 app.use('/api/member/update_track_member',update_track_memberRouter);
+app.use('/api/member/update_member',update_memberRouter);
 app.use('/api/member/select_uid_member',select_uid_memberRouter);
 //test
 app.use('/api/test/test_login', TEST_Router);//building
