@@ -39,6 +39,7 @@ var delete_activityRouter =  require('./routes/api/activity/delete_activity');
 var update_activityRouter =  require('./routes/api/activity/update_activity');
 var select_all_activityRouter =  require('./routes/api/activity/select_all_activity');
 var select_specific_activityRouter =  require('./routes/api/activity/select_specific_activity');
+var select_account_activityRouter =  require('./routes/api/activity/select_account_activity');
 //friend
 var check_friendRouter =  require('./routes/api/friend/check_friend');
 var insert_friendRouter =  require('./routes/api/friend/insert_friend');
@@ -56,8 +57,6 @@ var download_trackRouter =  require('./routes/api/track/download_track');
 var upload_trackRouter =  require('./routes/api/track/upload_track');
 //warning
 var warning_Router =  require('./routes/api/warning/warning');
-//AR
-var AR_Router =  require('./routes/api/AR/AR');
 //member
 var update_activity_memberRouter =  require('./routes/api/member/update_activity_member');
 var update_distance_time_memberRouter =  require('./routes/api/member/update_distance_time_member');
@@ -143,6 +142,7 @@ app.use('/api/activity/delete_activity', delete_activityRouter);
 app.use('/api/activity/update_activity', update_activityRouter);
 app.use('/api/activity/select_all_activity', select_all_activityRouter);
 app.use('/api/activity/select_specific_activity', select_specific_activityRouter);
+app.use('/api/activity/select_account_activity', select_account_activityRouter);
 //friend
 app.use('/api/friend/check_friend', check_friendRouter);
 app.use('/api/friend/insert_friend', insert_friendRouter);
@@ -160,7 +160,6 @@ app.use('/api/track/download_track', download_trackRouter);
 app.use('/api/track/upload_track', upload_trackRouter);
 //warning
 app.use('/api/warning/warning', warning_Router);//building
-app.use('/api/AR/AR', AR_Router);//building
 //member
 app.use('/api/member/update_activity_member',update_activity_memberRouter);
 app.use('/api/member/update_distance_time_member',update_distance_time_memberRouter);
