@@ -4,7 +4,7 @@ var sql = require('./mysql_api');
 const socket_api = { 
     io: io
 };
-activity=[];
+activity={};
 //活動開始 請 client 下載 track
 //
 // Add your socket.io logic here!
@@ -23,11 +23,55 @@ io.on( "connection", function( socket ) {
         }
         if(msg.ctlmsg=="leave activity room" ){socket.leave(msg.activity_msg);}
         if(msg.ctlmsg=="broadcast location"){
-          console.log(msg.location_msg);
           socket.to(msg.activity_msg).emit("activity",
           {"account_msg":msg.account_msg,
-          "activity_msg":msg.activity_msg,
-          "location_msg":msg.location_msg});
+           "activity_msg":msg.activity_msg,
+           "location_msg":msg.location_msg,
+           "distance_msg":msg.distance_msg
+          });
+          same_account=false;
+          if(activity[msg.activity_msg]){
+            for (var i = 0; i < activity[msg.activity_msg].length; i++) {
+              if(activity[msg.activity_msg][i].account_msg==msg.account_msg){
+                same_account=true;
+                activity[msg.activity_msg][i]={"account_msg":msg.account_msg,"location_msg":msg.location_msg};
+                break;
+              }
+            }
+            if(!same_account){
+              activity[msg.activity_msg][activity[msg.activity_msg].length]={"account_msg":msg.account_msg,"location_msg":msg.location_msg};
+              same_account=false;
+            }
+          }else{
+            activity[msg.activity_msg]=[{"account_msg":msg.account_msg,"location_msg":msg.location_msg}]
+          }
+          console.log(activity);
+          activity[msg.activity_msg].forEach(element => {
+            console.log(element);
+            console.log(msg.location_msg.latitude);
+            var p = 0.017453292519943295;
+            var a = 0.5 - 
+                    Math.cos((msg.location_msg.latitude-element.location_msg.latitude) * p ) / 2 +
+                    Math.cos(element.location_msg.latitude * p) *
+                    Math.cos(msg.location_msg.latitude * p) *
+                    ( 1 - Math.cos((msg.location_msg.longitude - element.location_msg.longitude) * p)) / 2;
+            console.log(a);
+            distance=12742 * Math.asin(Math.sqrt(a));
+            console.log(distance);
+            if(distance>msg.distance_msg){
+              console.log("warning");
+              var datetime=new Date(+new Date+8*3600*1000);
+              io.in(msg.activity_msg).emit("activity",{
+                "ctlmsg":"activity warniing",
+                "wanring_msg":"too far",
+                "activity_msg":msg.activity_msg,
+                "account_msg_1":element.account_msg, // 距離過遠的人 1
+                "account_msg_2":msg.account_msg, // 距離過遠的人 2 
+                "long_distance":distance, // 兩人最遠距離
+                "time_msg":new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
+            })
+            }
+          });
         }
         if(msg.ctlmsg=="friend request"){
           socket.in(msg.friend_msg).emit("account",

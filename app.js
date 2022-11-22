@@ -87,7 +87,8 @@ app.use(function(req,res,next){
     socket.sessionID = req.session.account;
     //socket.userID = session.userID;
     socket.account = req.session.account;
-    //req.socket.io.join(req.session.account);
+    console.log("session"+req.session.account);
+    socket.join(req.session.account);
     next();
   });
   next();
