@@ -9,6 +9,8 @@ activity=[];
 //
 // Add your socket.io logic here!
 io.on( "connection", function( socket ) {
+  console.log("ㄏㄏㄏrooms:",io.sockets.adapter.rooms);
+  
     console.log( "A user connected" );
     socket.emit("hello", "world");
     socket.on( "hello", (msg)=> {

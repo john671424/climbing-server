@@ -37,6 +37,8 @@ let select_member=(db,req)=>{
 }
 router.post('/',async function(req, res, next) {
   try{
+    let formData = req.body;
+    console.log(formData);
     let member_results=await select_member(req.db,req);
     if(req.session.account && member_results[0].account==req.session.account){
       if(req.body.uID1 != req.body.uID2){

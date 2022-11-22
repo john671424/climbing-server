@@ -68,7 +68,6 @@ var TEST_Router =  require('./routes/api/test/test_login');
 var TEST_download_Router =  require('./routes/api/test/test_download');
 var TEST_upload_Router =  require('./routes/api/test/test_upload');
 var TEST_start_activity_Router =  require('./routes/api/test/test_start_activity');
-const { log } = require('console');
 
 var app = express();
 
@@ -93,13 +92,6 @@ app.use(function(req,res,next){
   next();
 });
 
-// var pool = sql.createPool({
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PWD,
-//   host: process.env.DB_HOST,
-//   database: process.env.DB_DB,
-//   connectionLimit : 10
-// });
 app.use(function(req,res,next){
   req.db=sql.pool;
   next();
@@ -115,10 +107,6 @@ app.use(
   })
 );
 
-sql.pool.query('SELECT 1+1 AS solution',function(error,results,fields){
-  if(error) throw error;
-  console.log('ok');
-});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -128,7 +116,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 
 app.use('/', indexRouter);
