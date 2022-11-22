@@ -3,7 +3,7 @@ var router = express.Router();
 //必須先通過check_friend 才不會自己加自己好友或是加已經是好友的
 // {
 //     "uID1":,
-//     "uID2":
+//     "friend":
 // }
 let insert_friend=(db, req, uID1, uID2)=>{
   return new Promise((resolve, reject) => {
