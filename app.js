@@ -55,8 +55,6 @@ var select_all_trackRouter =  require('./routes/api/track/select_all_track');
 var select_specific_trackRouter =  require('./routes/api/track/select_specific_track');
 var download_trackRouter =  require('./routes/api/track/download_track');
 var upload_trackRouter =  require('./routes/api/track/upload_track');
-//warning
-var warning_Router =  require('./routes/api/warning/warning');
 //member
 var update_activity_memberRouter =  require('./routes/api/member/update_activity_member');
 var update_distance_time_memberRouter =  require('./routes/api/member/update_distance_time_member');
@@ -86,7 +84,8 @@ app.use(function(req,res,next){
     socket.sessionID = req.session.account;
     //socket.userID = session.userID;
     socket.account = req.session.account;
-    //req.socket.io.join(req.session.account);
+    console.log("session"+req.session.account);
+    socket.join(req.session.account);
     next();
   });
   next();
@@ -146,8 +145,6 @@ app.use('/api/track/select_all_track', select_all_trackRouter);
 app.use('/api/track/select_specific_track', select_specific_trackRouter);
 app.use('/api/track/download_track', download_trackRouter);
 app.use('/api/track/upload_track', upload_trackRouter);
-//warning
-app.use('/api/warning/warning', warning_Router);//building
 //member
 app.use('/api/member/update_activity_member',update_activity_memberRouter);
 app.use('/api/member/update_distance_time_member',update_distance_time_memberRouter);

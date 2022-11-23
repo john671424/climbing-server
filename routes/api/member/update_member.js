@@ -46,7 +46,7 @@ router.post('/',async function(req, res, next) {
       res.json({"result" : "session fail"});
     }
   }catch (error) {
-    res.json({"result" : "Fail to update total_track in member table"});
+    res.json({"result" : "Fail to update member"});
     console.log(error);
   }
 });

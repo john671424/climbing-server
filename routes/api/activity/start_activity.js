@@ -7,9 +7,9 @@ var router = express.Router();
 //以到 server 時間為主
 let start_activity=(db,req)=>{
   return new Promise((resolve, reject) => {
+    var datetime=new Date(+new Date+8*3600*1000);
     let sql="UPDATE `activity` SET `start_activity_time`=? WHERE `aID`=?";
-    let param=[new Date().toISOString().slice(0, 19).replace('T', ' '),req.body.aID];
-    console.log(new Date().toISOString().slice(0, 19).replace('T', ' '));
+    let param=[new Date(datetime).toISOString().slice(0, 19).replace('T', ' '),req.body.aID];
     db.query(sql,param,(err,result,fields)=>{
       if(err){
         reject(err);

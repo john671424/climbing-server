@@ -46,8 +46,9 @@ let select_activity=(db,req)=>{
   }
 let update_finish_activity_time=(db,req)=>{
   return new Promise((resolve, reject) => {
+    var datetime=new Date(+new Date+8*3600*1000);
     let sql="UPDATE `activity` SET `finish_activity_time`=? WHERE `aID`=?";
-    let param=[new Date().toISOString().slice(0, 19).replace('T', ' '),req.body.aID];
+    let param=[new Date(datetime).toISOString().slice(0, 19).replace('T', ' '),req.body.aID];
     db.query(sql,param,(err,result,fields)=>{
       if(err){
         reject(err);
@@ -115,7 +116,7 @@ router.post('/',async function(req, res, next) {
         let select_uid_result =await select_uid(req.db,element.uID);
         let select_activity_result =await select_activity(req.db,req);
         req.socket.io.to(select_uid_result[0].account).emit("account",{
-          "ctlmsg":"leave activity room",
+          "ctlmsg":"activity finish",
           "activity_msg":select_activity_result[0].aID+" "+select_activity_result[0].activity_name,
           "account_msg":select_uid_result[0].account
         })

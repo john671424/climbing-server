@@ -34,7 +34,8 @@ router.get('/',async function(req, res, next) {
           if (curUser == req.session.account) {
             socket.join(req.session.account);
             console.log("rooms:",req.socket.io.sockets.adapter.rooms);
-            socket.account=req.session.account;
+            socket.join("0 test");
+          socket.account=req.session.account;
             req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world");
           }
         });
