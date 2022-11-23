@@ -25,35 +25,19 @@ router.get('/',async function(req, res, next) {
   try{
     let counter=1;
     let results=await select_account(req.db,req);
-    // req.socket.io.on("connection", (socket) => {
-    //   socket.on('ctlmsg',(msg) => {
-    //     if(msg.ctlmsg=="join socket room" ){
-    //       socket.join(msg.activity_msg);
-    //     }
-    //     if(msg.ctlmsg=="leave socket room" ){
-    //       socket.leave(msg.activity_msg);
-    //     }
-    //     if(msg.ctlmsg=="broadcast location"){
-    //       console.log("I am in");
-    //       console.log(msg.location_msg);
-    //       socket.to(msg.activity_msg).emit("activity",msg.account_msg,msg.activity_msg,msg.location_msg);
-    //     }
-    //   });
-    //   socket.on( "test", (msg)=> {
-    //     console.log( "A "+msg );
-    // });
-    // });
+
     if(req.session.account){
       name=req.session.account;
       req.socket.io.on("connection", (socket) => {
         // console.log(socket.handshake.auth.username);
         // console.log(socket.sessionID);
         // console.log(socket.username);
-        if (name==req.session.account  /*counter==1*/) {
+        if (name==req.session.account && counter==1) {
           socket.join(req.session.account);
           socket.join("0 test");
           socket.account=req.session.account;
-          req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world");
+          req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world"+socket.id);
+          counter++;
         }
       });
       res.render('index', { title: req.session.account });

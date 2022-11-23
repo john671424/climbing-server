@@ -1,104 +1,116 @@
 const { log } = require("debug/src/browser");
-const io = require( "socket.io" )();
+const io = require("socket.io")();
 var sql = require('./mysql_api');
-const socket_api = { 
-    io: io
+const socket_api = {
+  io: io
 };
-activity={};
+activity = {};
+let counter=0;
 //活動開始 請 client 下載 track
 //
 // Add your socket.io logic here!
-io.on( "connection", function( socket ) {
-    console.log( "A user connected" );
-    socket.emit("hello", "world");
-    socket.on( "hello", (msg)=> {
-        console.log( "A "+msg );
-    });
-    socket.on('ctlmsg',async (msg) => {
-        console.log("in ctlmsg");
-        if(msg.ctlmsg=="join account room" ){socket.join(msg.account_msg);}
-        if(msg.ctlmsg=="join activity room" ){
-          socket.join(msg.activity_msg);
-          //let update_activity_member_results=await update_activity_member(sql.pool,msg);
-        }
-        if(msg.ctlmsg=="leave activity room" ){socket.leave(msg.activity_msg);}
-        if(msg.ctlmsg=="broadcast location"){
-          socket.to(msg.activity_msg).emit("activity",
-          {"account_msg":msg.account_msg,
-           "activity_msg":msg.activity_msg,
-           "location_msg":msg.location_msg,
-           "distance_msg":msg.distance_msg
-          });
-          same_account=false;
-          if(activity[msg.activity_msg]){
-            for (var i = 0; i < activity[msg.activity_msg].length; i++) {
-              if(activity[msg.activity_msg][i].account_msg==msg.account_msg){
-                same_account=true;
-                activity[msg.activity_msg][i]={"account_msg":msg.account_msg,"location_msg":msg.location_msg};
-                break;
-              }
-            }
-            if(!same_account){
-              activity[msg.activity_msg][activity[msg.activity_msg].length]={"account_msg":msg.account_msg,"location_msg":msg.location_msg};
-              same_account=false;
-            }
-          }else{
-            activity[msg.activity_msg]=[{"account_msg":msg.account_msg,"location_msg":msg.location_msg}]
+io.on("connection", function (socket) {
+  console.log("A user connected");
+  socket.emit("hello", "world");
+  socket.on("hello", (msg) => {
+    console.log("A " + msg);
+  });
+  socket.on('ctlmsg', async (msg) => {
+    console.log("in ctlmsg");
+    if (msg.ctlmsg == "join account room") { socket.join(msg.account_msg); }
+    if (msg.ctlmsg == "join activity room") {
+      socket.join(msg.activity_msg);
+      //let update_activity_member_results=await update_activity_member(sql.pool,msg);
+    }
+    if (msg.ctlmsg == "leave activity room") { socket.leave(msg.activity_msg); }
+    if (msg.ctlmsg == "broadcast location") {
+      socket.to(msg.activity_msg).emit("activity",
+        {
+          "account_msg": msg.account_msg,
+          "activity_msg": msg.activity_msg,
+          "location_msg": msg.location_msg,
+          "distance_msg": msg.distance_msg
+        });
+      same_account = false;
+      if (activity[msg.activity_msg]) {
+        for (var i = 0; i < activity[msg.activity_msg].length; i++) {
+          if (activity[msg.activity_msg][i].account_msg == msg.account_msg) {
+            same_account = true;
+            activity[msg.activity_msg][i] = { "account_msg": msg.account_msg, "location_msg": msg.location_msg };
+            break;
           }
-          console.log(activity);
-          activity[msg.activity_msg].forEach(element => {
-            console.log(element);
-            console.log(msg.location_msg.latitude);
-            var p = 0.017453292519943295;
-            var a = 0.5 - 
-                    Math.cos((msg.location_msg.latitude-element.location_msg.latitude) * p ) / 2 +
-                    Math.cos(element.location_msg.latitude * p) *
-                    Math.cos(msg.location_msg.latitude * p) *
-                    ( 1 - Math.cos((msg.location_msg.longitude - element.location_msg.longitude) * p)) / 2;
-            console.log(a);
-            distance=12742 * Math.asin(Math.sqrt(a));
-            console.log(distance);
-            if(distance>msg.distance_msg){
-              console.log("warning");
-              var datetime=new Date(+new Date+8*3600*1000);
-              io.in(msg.activity_msg).emit("activity",{
-                "ctlmsg":"activity warniing",
-                "wanring_msg":"too far",
-                "activity_msg":msg.activity_msg,
-                "account_msg_1":element.account_msg, // 距離過遠的人 1
-                "account_msg_2":msg.account_msg, // 距離過遠的人 2 
-                "long_distance":distance, // 兩人最遠距離
-                "time_msg":new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
-            })
-            }
-          });
         }
-        if(msg.ctlmsg=="friend request"){
-          socket.in(msg.friend_msg).emit("account",
-          {"ctlmsg":msg.ctlmsg,
-          "account_msg":msg.account_msg,
-          "friend_msg":msg.friend_msg});
-        //account 想加 friend's account 為朋友
+        if (!same_account) {
+          activity[msg.activity_msg][activity[msg.activity_msg].length] = { "account_msg": msg.account_msg, "location_msg": msg.location_msg };
+          same_account = false;
         }
-        if(msg.ctlmsg=="friend response"){
-          socket.in(msg.friend_msg).emit("account",
-          {"ctlmsg":msg.ctlmsg,
-          "friend_msg":msg.friend_msg,
-          "account_msg":msg.account_msg});
-        //account 想加 friend's account 為朋友
+      } else {
+        activity[msg.activity_msg] = [{ "account_msg": msg.account_msg, "location_msg": msg.location_msg }]
+      }
+      console.log(activity);
+      activity[msg.activity_msg].forEach(element => {
+        var p = 0.017453292519943295;
+        var a = 0.5 -
+          Math.cos((msg.location_msg.latitude - element.location_msg.latitude) * p) / 2 +
+          Math.cos(element.location_msg.latitude * p) *
+          Math.cos(msg.location_msg.latitude * p) *
+          (1 - Math.cos((msg.location_msg.longitude - element.location_msg.longitude) * p)) / 2;
+        distance = 12742 * Math.asin(Math.sqrt(a));
+        console.log(distance);
+        if (distance > msg.distance_msg) {
+          console.log("warning");
+          var datetime = new Date(+new Date + 8 * 3600 * 1000);
+          io.in(msg.activity_msg).emit("activity", {
+            "ctlmsg": "activity warniing",
+            "wanring_msg": "too far",
+            "activity_msg": msg.activity_msg,
+            "account_msg_1": element.account_msg, // 距離過遠的人 1
+            "account_msg_2": msg.account_msg, // 距離過遠的人 2 
+            "long_distance": distance, // 兩人最遠距離
+            "time_msg": new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
+          })
         }
       });
+    }
+    // if (msg.ctlmsg == "friend request") {
+    //   socket.in(msg.friend_msg).emit("account",
+    //     {
+    //       "ctlmsg": msg.ctlmsg,
+    //       "account_msg": msg.account_msg,
+    //       "friend_msg": msg.friend_msg
+    //     })
+    //       counter++;
+    //       console.log("friend request counter:"+counter);
+    //       console.log(new Date());
+        
+    //   //account 想加 friend's account 為朋友
+    // }
+    if (msg.ctlmsg == "friend response") {
+      socket.in(msg.friend_msg).emit("account",
+        {
+          "ctlmsg": msg.ctlmsg,
+          "friend_msg": msg.friend_msg,
+          "account_msg": msg.account_msg
+        });
+        console.log("friend response");
+        console.log(new Date());
+      //account 想加 friend's account 為朋友
+    }
+  });
+  socket.on("disconnect", function () {
+    console.log("disconnect");
+  });
 });
-let update_activity_member=(db,msg)=>{
+let update_activity_member = (db, msg) => {
   return new Promise((resolve, reject) => {
-    let sql="UPDATE `activity_member` SET `status`=2 WHERE `aID`=? and `uID`=?";
-    let account_uid=msg.account_msg.split(' ');
-    let activity_aid=msg.activity_msg.split(' ');
-    let param=[activity_aid[0],account_uid[0]];
-    db.query(sql,param,(err,result,fields)=>{
-      if(err){
+    let sql = "UPDATE `activity_member` SET `status`=2 WHERE `aID`=? and `uID`=?";
+    let account_uid = msg.account_msg.split(' ');
+    let activity_aid = msg.activity_msg.split(' ');
+    let param = [activity_aid[0], account_uid[0]];
+    db.query(sql, param, (err, result, fields) => {
+      if (err) {
         reject(err);
-      }else{
+      } else {
         resolve(result);
       }
     })

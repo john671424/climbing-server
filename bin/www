@@ -41,7 +41,7 @@ instrument(socket_api.io, {
 /**
  * Listen on provided port, on all network interfaces.
  */
-
+socket_api.io.disconnectSockets();
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

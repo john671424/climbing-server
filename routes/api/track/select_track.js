@@ -1,3 +1,4 @@
+const { log } = require('debug/src/browser');
 var express = require('express');
 var router = express.Router();
 // {
@@ -17,8 +18,11 @@ let select_track=(db,req)=>{
   });
 }
 router.post('/',async function(req, res, next) {
+  console.log("123");
   try{
+    console.log(req.body);
     if(req.session.account){
+      
       let results_select=await select_track(req.db,req);
       res.json(results_select);
     }else{

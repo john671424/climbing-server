@@ -45,6 +45,8 @@ router.post('/',async function(req, res, next) {
         {"ctlmsg":"friend request",
         "account_msg":member_results[0].account,
         "friend_msg":req.body.friend});
+        console.log("invute friend req");
+        console.log(new Date());
         res.json({"result" : "Invite success"});
       }else{
         res.json({"result" : "Fail to invite friend"});
