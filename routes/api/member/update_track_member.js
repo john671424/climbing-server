@@ -38,7 +38,7 @@ router.post('/', async function (req, res, next) {
   try {
     let member_results = await select_member(req.db, req.body.uID);
     if (req.session.account && member_results[0].account == req.session.account) {
-      let update_member_results = await update_member(req.db, req.body.uID,member_results.total_track);
+      let update_member_results = await update_member(req.db, req.body.uID,member_results[0].total_track);
       let select_update_member_results = await select_member(req.db, req.body.uID);
       res.json(select_update_member_results[0]);
     } else {
