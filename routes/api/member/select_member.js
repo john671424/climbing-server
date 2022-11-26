@@ -23,7 +23,7 @@ let select_member = (db, uID) => {
 }
 router.post('/', async function (req, res, next) {
   try {
-    let member_results = await select_member(req.db, req);
+    let member_results = await select_member(req.db, req.body.uID);
     if (req.session.account) {
       let select_update_member_results = await select_member(req.db, req.body.uID);
       res.json(select_update_member_results[0]);
