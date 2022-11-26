@@ -49,8 +49,9 @@ let select_insert_activity_member=(db,req,members,insert_activity_results)=>{
         if(err){
           reject(err);
         }else{
+          console.log("send to :"+result[0].account);
           req.socket.io.to(result[0].account).emit("account",{
-            "ctlmsg":"activity update", 
+            "ctlmsg":"activity insert", 
             "activity_msg":insert_activity_results.insertId+" "+req.body.activity_name
         });
           resolve(result);
@@ -78,10 +79,7 @@ router.post('/',async function(req, res, next) {
   try{
     if(req.session.account){
         let insert_activity_results=await insert_activity(req.db,req);
-        console.log(insert_activity_results);
-        tmp=req.body.members.replace("[","");
-        tmp2=tmp.replace("]","");
-        members=tmp2.split(',');
+        members=JSON.parse(req.body.members);
         let insert_activity_member_results=await insert_activity_member(req.db,req,insert_activity_results,members);
         let select_insert_activity_member_results=await select_insert_activity_member(req.db,req,members,insert_activity_results);
         let select_insert_activity_results=await select_insert_activity(req.db,insert_activity_results.insertId)

@@ -4,10 +4,10 @@ var router = express.Router();
 //     "uID":"9"
 // }
 //以到 server 時間為主
-let update_member=(db,req)=>{
+let update_member=(db,uID,total_activity)=>{
     return new Promise((resolve, reject) => {
       let sql="UPDATE `member` SET `total_activity`=? WHERE `uID`=?";
-      let param=[req.body.total_activity,req.body.uID];
+      let param=[total_activity+1,uID];
       db.query(sql,param,(err,result,fields)=>{
         if(err){
           reject(err);
@@ -17,10 +17,10 @@ let update_member=(db,req)=>{
       })
     });
   }
-  let select_member=(db,req)=>{
+  let select_member=(db,uID)=>{
     return new Promise((resolve, reject) => {
       let sql="SELECT `uID`, `account`,`name`, `total_distance`, `total_time`, `total_activity`, `total_track` FROM `member` WHERE `uID`=?";
-      let param=[req.body.uID];
+      let param=[uID];
       db.query(sql,param,(err,result,fields)=>{
         if(err){
           reject(err);
@@ -36,10 +36,10 @@ let update_member=(db,req)=>{
   }
 router.post('/',async function(req, res, next) {
   try{
-    let member_results=await select_member(req.db,req);
+    let member_results=await select_member(req.db,req.body.uID);
     if(req.session.account && member_results[0].account==req.session.account){
-      let update_member_results=await update_member(req.db,req);
-      let select_update_member_results=await select_member(req.db,req);
+      let update_member_results=await update_member(req.db,req.body.uID,member_results.total_activity);
+      let select_update_member_results=await select_member(req.db,req.body.uID);
       res.json(select_update_member_results[0]);
     }else{
       req.session.destroy();

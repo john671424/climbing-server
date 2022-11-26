@@ -2,6 +2,7 @@ const { log } = require('debug/src/browser');
 var express = require('express');
 var router = express.Router();
 // {
+//     "aID":""
 //     "uID":"1",
 //     "activity_name":"john1",
 //     "tID":"1",
@@ -73,9 +74,6 @@ router.post('/',async function(req, res, next) {
   try{
     if(req.session.account){
         let update_activity_results=await update_activity(req.db,req);
-        // tmp=req.body.members.replace("[","");
-        // tmp2=tmp.replace("]","");
-        // members=tmp2.split(',');
         let select_activity_member_results=await select_activity_member(req.db,req);
         let select_account_activity_member_results=await select_account_activity_member(req.db,req,select_activity_member_results,update_activity_results);
         let select_update_activity_results=await select_update_activity(req.db,req.body.aID)

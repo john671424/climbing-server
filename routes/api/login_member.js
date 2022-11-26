@@ -21,8 +21,9 @@ let select_account=(db,req)=>{
 }
 router.post('/',async function(req, res, next) {
   try{
+    let counter=1;
     let results=await select_account(req.db,req);
-    if(req.session.account){
+    if(req.session.account&& counter==1){
       name=req.session.account;
       req.socket.io.on("connection", (socket) => {
         //socket.nickname = req.session.account;
@@ -30,6 +31,7 @@ router.post('/',async function(req, res, next) {
           socket.join(req.session.account);//加入名為 account 的 socket room 作為專門通知 client 的管道
           socket.account=req.session.account;
           req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world");
+          counter++;
         }
       });
       res.json(results[0]);

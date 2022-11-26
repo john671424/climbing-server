@@ -52,8 +52,8 @@
     var longitude_msg = document.getElementById("longitude_msg").value;
     var elevation_msg = document.getElementById("elevation_msg").value;
     var distance_msg = document.getElementById("distance_msg").value;
-    socket.volatile.emit("ctlmsg",{"ctlmsg":"friend request","account_msg":account_msg,"activity_msg":"0 test"
-    ,"friend_msg":distance_msg});
+    socket.volatile.emit("ctlmsg",{"ctlmsg":"broadcast location","account_msg":account_msg,"activity_msg":"0 test"
+    ,"location_msg":{"latitude": latitude_msg,"longitude":longitude_msg,"elevation":elevation_msg},"distance_msg":distance_msg});
     return false;
   }
 </script>

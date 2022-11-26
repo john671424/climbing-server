@@ -26,6 +26,7 @@ io.on("connection", function (socket) {
     if (msg.ctlmsg == "broadcast location") {
       socket.to(msg.activity_msg).emit("activity",
         {
+          "ctlmsg":msg.ctlmsg,
           "account_msg": msg.account_msg,
           "activity_msg": msg.activity_msg,
           "location_msg": msg.location_msg,
