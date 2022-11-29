@@ -22,7 +22,7 @@
     </script>
 <script>
   // 這是什麼醜不啦嘰的東西
-  var socket = io({ transports: ["websocket"],withCredentials: true});
+  var socket = io({ transports: ["websocket"]});
   var socketid;
   socket.on("connect", (arg) => {
     socketid=socket.id; // true
