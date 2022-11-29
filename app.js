@@ -77,10 +77,33 @@ app.use(session({
   saveUninitialized: true,
   cookie: { sameSite: true,
             // secure: true ,
-            maxAge: 3600*1000,
+            expires: new Date(253402300000000),
             httpOnly: false},
   store: sessionStore
 }))
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+socket.io.use(wrap(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,//true
+  cookie: { sameSite: true,
+            // secure: true ,
+            expires: new Date(253402300000000),
+            httpOnly: false},
+  store: sessionStore
+})));
+socket.io.use((socket, next) => {
+  const session = socket.request.session;
+  console.log(session);
+  console.log(session.authenticated);
+  if (session ) {
+    console.log("hi");
+    next();
+  } else {
+    console.log("no");
+    next(new Error("unauthorized"));
+  }
+});
 app.use(function(req,res,next){
   socket.io.use((socket, next) => {
     

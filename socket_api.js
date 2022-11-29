@@ -58,16 +58,16 @@ io.on("connection", function (socket) {
           (1 - Math.cos((msg.location_msg.longitude - element.location_msg.longitude) * p)) / 2;
         distance = 12742 * Math.asin(Math.sqrt(a));
         console.log(distance);
-        if (distance > msg.distance_msg) {
+        if (distance*1000 > msg.distance_msg) {
           console.log("warning");
           var datetime = new Date(+new Date + 8 * 3600 * 1000);
           io.in(msg.activity_msg).emit("activity", {
-            "ctlmsg": "activity warniing",
+            "ctlmsg": "activity warning",
             "wanring_msg": "too far",
             "activity_msg": msg.activity_msg,
             "account_msg_1": element.account_msg, // 距離過遠的人 1
             "account_msg_2": msg.account_msg, // 距離過遠的人 2 
-            "long_distance": distance, // 兩人最遠距離
+            "long_distance": distance*1000, // 兩人最遠距離
             "time_msg": new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
           })
         }
@@ -96,6 +96,9 @@ io.on("connection", function (socket) {
         console.log("friend response");
         console.log(new Date());
       //account 想加 friend's account 為朋友
+    }
+    if (msg.ctlmsg == "activity warning") {
+      socket.in(msg.activity_msg).emit("activity",msg);
     }
   });
   socket.on("disconnect", function () {

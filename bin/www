@@ -24,8 +24,11 @@ var server = http.createServer(app);
 socket_api.io.attach(server,{
   cors: {
     origin: ["https://admin.socket.io"],
+    methods: ["GET", "POST"],
+    transports: ['websocket', 'polling'],
     credentials: true
-  }
+  },
+  allowEIO3: true
 });
 
 // const io = new Server(server, {

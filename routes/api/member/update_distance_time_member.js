@@ -7,7 +7,7 @@ var router = express.Router();
 let update_member=(db,total_distance,total_time,uID,old_distance,old_time)=>{
     return new Promise((resolve, reject) => {
       let sql="UPDATE `member` SET `total_distance`=?,`total_time`=? WHERE `uID`=?";
-      let param=[old_distance+total_distance,old_time+total_time,uID];
+      let param=[Number(old_distance)+Number(total_distance),Number(old_time)+Number(total_time),uID];
       db.query(sql,param,(err,result,fields)=>{
         if(err){
           reject(err);
