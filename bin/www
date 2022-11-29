@@ -16,7 +16,7 @@ let socket_api = require("../socket_api");
  */
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-app.set('trust proxy', '192.168.0.188')
+
 /**
  * Create HTTP server.
  */

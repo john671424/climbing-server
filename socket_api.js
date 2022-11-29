@@ -57,7 +57,7 @@ io.on("connection", function (socket) {
           Math.cos(msg.location_msg.latitude * p) *
           (1 - Math.cos((msg.location_msg.longitude - element.location_msg.longitude) * p)) / 2;
         distance = 12742 * Math.asin(Math.sqrt(a));
-        console.log(distance);
+        console.log(distance*1000);
         if (distance*1000 > msg.distance_msg) {
           console.log("warning");
           var datetime = new Date(+new Date + 8 * 3600 * 1000);
@@ -98,7 +98,7 @@ io.on("connection", function (socket) {
       //account 想加 friend's account 為朋友
     }
     if (msg.ctlmsg == "activity warning") {
-      socket.in(msg.activity_msg).emit("activity",msg);
+      io.in(msg.activity_msg).emit("activity",msg);
     }
   });
   socket.on("disconnect", function () {

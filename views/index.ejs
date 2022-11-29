@@ -11,18 +11,21 @@
       <input type="text" name="channel" id="channel" placeholder="channel">
       <input type="text" name="ctlmsg" id="ctlmsg" placeholder="ctlmsg">
       <input type="text" name="account_msg" id="account_msg" placeholder="account_msg">
+      <input type="text" name="account_msg_1" id="account_msg_1" placeholder="account_msg_1">
+      <input type="text" name="account_msg_2" id="account_msg_2" placeholder="account_msg_2">
       <input type="text" name="activity_msg" id="activity_msg" placeholder="activity_msg">
       <input type="text" name="latitude_msg" id="latitude_msg" placeholder="latitude_msg">
       <input type="text" name="longitude_msg" id="longitude_msg" placeholder="longitude_msg">
       <input type="text" name="elevation_msg" id="elevation_msg" placeholder="elevation_msg">
       <input type="text" name="distance_msg" id="distance_msg" placeholder="distance_msg">
+      <input type="text" name="warning_msg" id="warning_msg" placeholder="warning_msg">
       <input type="submit" id="submit" value="送出">
     </form>
     <script src="/socket.io/socket.io.js">
     </script>
 <script>
   // 這是什麼醜不啦嘰的東西
-  var socket = io({ transports: ["websocket"]});
+  var socket = io({ transports: ["websocket"],withCredentials: true});
   var socketid;
   socket.on("connect", (arg) => {
     socketid=socket.id; // true
@@ -47,13 +50,16 @@
     var channel = document.getElementById("channel").value;
     var ctlmsg = document.getElementById("ctlmsg").value;
     var account_msg = document.getElementById("account_msg").value;
-    //var activity_msg = document.getElementById("activity_msg").value;
+    var account_msg_1 = document.getElementById("account_msg_1").value;
+    var account_msg_2 = document.getElementById("account_msg_2").value;
+    var warning_msg = document.getElementById("warning_msg").value;
+    var activity_msg = document.getElementById("activity_msg").value;
     var latitude_msg = document.getElementById("latitude_msg").value;
     var longitude_msg = document.getElementById("longitude_msg").value;
     var elevation_msg = document.getElementById("elevation_msg").value;
     var distance_msg = document.getElementById("distance_msg").value;
-    socket.volatile.emit("ctlmsg",{"ctlmsg":"broadcast location","account_msg":account_msg,"activity_msg":"0 test"
-    ,"location_msg":{"latitude": latitude_msg,"longitude":longitude_msg,"elevation":elevation_msg},"distance_msg":distance_msg});
+    socket.volatile.emit(channel,{"ctlmsg":ctlmsg,"account_msg":account_msg,"activity_msg":activity_msg
+    ,"location_msg":{"latitude": latitude_msg,"longitude":longitude_msg,"elevation":elevation_msg},"distance_msg":distance_msg,"warning_msg":warning_msg,"account_msg_1":account_msg_1,"account_msg_2":account_msg_2});
     return false;
   }
 </script>
