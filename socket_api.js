@@ -74,7 +74,17 @@ io.on("connection", function (socket) {
               "account_msg_2": msg.account_msg, // 距離過遠的人 2 
               "long_distance": distance * 1000, // 兩人最遠距離
               "time_msg": new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
-            })
+            });
+            tmp_msg={
+              "ctlmsg": "activity warning",
+              "wanring_msg": "too far",
+              "activity_msg": msg.activity_msg,
+              "account_msg_1": element.account_msg, // 距離過遠的人 1
+              "account_msg_2": msg.account_msg, // 距離過遠的人 2 
+              "long_distance": distance * 1000, // 兩人最遠距離
+              "time_msg": new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
+            }
+            insert_warning(sql.pool,tmp_msg)
           }else{
             console.log("counter: "+activity[msg.activity_msg][0].counter);
             console.log("war counter: "+100*(activity[msg.activity_msg].length-1));
@@ -121,6 +131,19 @@ let update_activity_member = (db, msg) => {
     let account_uid = msg.account_msg.split(' ');
     let activity_aid = msg.activity_msg.split(' ');
     let param = [activity_aid[0], account_uid[0]];
+    db.query(sql, param, (err, result, fields) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    })
+  });
+}
+let insert_warning = (db, msg) => {
+  return new Promise((resolve, reject) => {
+    let sql = "INSERT INTO `warning`(`msg`) VALUES (?)";
+    let param = [msg];
     db.query(sql, param, (err, result, fields) => {
       if (err) {
         reject(err);

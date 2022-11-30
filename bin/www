@@ -24,8 +24,8 @@ var server = http.createServer(app);
 socket_api.io.attach(server,{
   cors: {
     origin: ["https://admin.socket.io"],
-    methods: ["GET", "POST"],
-    transports: ['websocket'],
+    //methods: ["GET", "POST"],
+    //transports: ['websocket'],
     credentials: true
   },
   transports: ["websocket", "polling"],
