@@ -30,6 +30,9 @@
   socket.on("connect", (arg) => {
     socketid=socket.id; // true
     console.log(socketid);
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    socket.emit("ctlmsg",{"ctlmsg":"join account room","account_msg":urlParams.get('account')})
   });
   socket.on('account',(msg) => {
     console.log("account:");

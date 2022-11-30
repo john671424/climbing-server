@@ -28,6 +28,7 @@ socket_api.io.attach(server,{
     transports: ['websocket'],
     credentials: true
   },
+  transports: ['websocket'],
   allowEIO3: true
 });
 

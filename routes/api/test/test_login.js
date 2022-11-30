@@ -3,55 +3,39 @@ var express = require('express');
 var router = express.Router();
 
 let name;
-let select_account=(db,req)=>{
+let select_account = (db, req) => {
   return new Promise((resolve, reject) => {
-    let sql="SELECT * FROM `member` WHERE `account`=? AND `password`=?";
-    let param=[req.query.account,req.query.password];
-    db.query(sql,param,(err,result,fields)=>{
-      if(err){
+    let sql = "SELECT * FROM `member` WHERE `account`=? AND `password`=?";
+    let param = [req.query.account, req.query.password];
+    db.query(sql, param, (err, result, fields) => {
+      if (err) {
         reject(err);
-      }else{
-        if(result.length!=1){
+      } else {
+        if (result.length != 1) {
           reject("no result");
-        }else{
-          req.session.account=result[0].account;
+        } else {
+          req.session.account = result[0].account;
           resolve(result);
         }
       }
     })
   });
 }
-router.get('/',async function(req, res, next) {
-  try{
-    let counter=1;
-    let results=await select_account(req.db,req);
 
-    if(req.session.account){
-      name=req.session.account;
-      req.socket.io.on("connection", (socket) => {
-        // console.log(socket.handshake.auth.username);
-        // console.log(socket.sessionID);
-        // console.log(socket.username);
-        if (name==req.session.account && counter==1) {
-          socket.join(req.session.account);
-          socket.join("0 test");
-          socket.account=req.session.account;
-          req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world"+socket.id);
-          counter++;
-        }
-      });
-      res.render('index', { title: req.session.account });
-    }else{
-      req.session.destroy();
-      res.send("login fail");
-      res.render('index', { title: "error" });
-    }
-  } catch (error) {
-    req.session.destroy();
-    res.send("login failed");
-    console.log(error);
-    res.render('index', { title: "error" });
-  }
+let sleep = (ms) => {
+  return new Promise((rs) => {
+    setTimeout(() => {
+      rs()
+    }, ms);
+  })
+}
+router.get('/', async (req, res, next) => {
+  req.session.account = req.query.account;
+  res.render('index', { title: req.session.account });
+  await sleep(3000)
+  //req.socket.io.in(req.session.account).emit('account', 'dgfgfdgdfgfdgfdddfgdffd')
+  next()
+}, async function (req, res, next) {
 });
 
 module.exports = router;

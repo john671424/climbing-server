@@ -25,11 +25,12 @@ router.post('/',async function(req, res, next) {
     let results=await select_account(req.db,req);
     if(req.session.account&& counter==1){
       name=req.session.account;
+      // 等影片做完之後測試把這裡的 socket on connection 拿掉
+      // 是否可以正常家道 room
       req.socket.io.on("connection", (socket) => {
         //socket.nickname = req.session.account;
-        if (name==req.session.account){
-          socket.join(req.session.account);//加入名為 account 的 socket room 作為專門通知 client 的管道
-          socket.account=req.session.account;
+        if (name==socket.account){
+          socket.join(socket.account);//加入名為 account 的 socket room 作為專門通知 client 的管道
           req.socket.io.in(req.session.account).emit("account", "hello "+req.session.account+" welocome to the world");
           counter++;
         }

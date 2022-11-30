@@ -77,11 +77,11 @@ app.use(session({
   saveUninitialized: true,
   cookie: { sameSite: true,
             // secure: true ,
-            expires: new Date(253402300000000),
+            //expires: new Date(253402300000000),
             httpOnly: false},
   store: sessionStore
 }))
-const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+/*const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
 socket.io.use(wrap(session({
   secret: 'keyboard cat',
   resave: false,
@@ -95,7 +95,6 @@ socket.io.use(wrap(session({
 socket.io.use((socket, next) => {
   const session = socket.request.session;
   console.log(session);
-  console.log(session.authenticated);
   if (session ) {
     console.log("hi");
     next();
@@ -103,19 +102,19 @@ socket.io.use((socket, next) => {
     console.log("no");
     next(new Error("unauthorized"));
   }
-});
-app.use(function(req,res,next){
-  socket.io.use((socket, next) => {
+});*/
+// app.use(function(req,res,next){
+//   socket.io.use((socket, next) => {
     
-    socket.sessionID = req.session.account;
-    //socket.userID = session.userID;
-    socket.account = req.session.account;
-    //console.log("session"+req.session.account);
-    //socket.join(req.session.account);
-    next();
-  });
-  next();
-});
+//     socket.sessionID = req.session.account;
+//     //socket.userID = session.userID;
+//     socket.account = req.session.account;
+//     //console.log("session"+req.session.account);
+//     //socket.join(req.session.account);
+//     next();
+//   });
+//   next();
+// });
 
 // var pool = sql.createPool({
 //   user: process.env.DB_USER,
