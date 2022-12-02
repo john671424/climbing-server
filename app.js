@@ -105,12 +105,7 @@ socket.io.use((socket, next) => {
 });*/
 // app.use(function(req,res,next){
 //   socket.io.use((socket, next) => {
-    
-//     socket.sessionID = req.session.account;
-//     //socket.userID = session.userID;
 //     socket.account = req.session.account;
-//     //console.log("session"+req.session.account);
-//     //socket.join(req.session.account);
 //     next();
 //   });
 //   next();

@@ -47,7 +47,7 @@ let select_insert_activity_member=async(db,req,select_activity_member_results,se
           reject(err);
         }else{
           for (const socket of sockets) {
-            if(socket.account==result[0].account){
+            if(socket.handshake.auth.account==result[0].account){
               req.socket.io.in(socket.id).socketsJoin(select_activity_results[0].aID+" "+select_activity_results[0].activity_name);
             }
           }

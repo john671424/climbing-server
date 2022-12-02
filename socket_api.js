@@ -51,7 +51,7 @@ io.on("connection", function (socket) {
         activity[msg.activity_msg] = [{ "counter": 0 }, { "account_msg": msg.account_msg, "location_msg": msg.location_msg }]
       }
       console.log(activity);
-      activity[msg.activity_msg].forEach(element => {
+      activity[msg.activity_msg].forEach(async element => {
         try {
           var p = 0.017453292519943295;
           var a = 0.5 -
@@ -61,33 +61,36 @@ io.on("connection", function (socket) {
             (1 - Math.cos((msg.location_msg.longitude - element.location_msg.longitude) * p)) / 2;
           distance = 12742 * Math.asin(Math.sqrt(a));
           console.log(distance * 1000);
-          
-          if (distance * 1000 > msg.distance_msg && activity[msg.activity_msg][0].counter%(100*(activity[msg.activity_msg].length-1))==0) {
-            activity[msg.activity_msg][0]={"counter":activity[msg.activity_msg][0].counter+1}
+          if (distance * 1000 > msg.distance_msg  ) {
             console.log("warning");
             var datetime = new Date(+new Date + 8 * 3600 * 1000);
-            io.in(msg.activity_msg).emit("activity", {
-              "ctlmsg": "activity warning",
-              "wanring_msg": "too far",
-              "activity_msg": msg.activity_msg,
-              "account_msg_1": element.account_msg, // 距離過遠的人 1
-              "account_msg_2": msg.account_msg, // 距離過遠的人 2 
-              "long_distance": distance * 1000, // 兩人最遠距離
-              "time_msg": new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
-            });
-            tmp_msg={
-              "ctlmsg": "activity warning",
-              "wanring_msg": "too far",
-              "activity_msg": msg.activity_msg,
-              "account_msg_1": element.account_msg, // 距離過遠的人 1
-              "account_msg_2": msg.account_msg, // 距離過遠的人 2 
-              "long_distance": distance * 1000, // 兩人最遠距離
-              "time_msg": new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
+            if (activity[msg.activity_msg][0].counter % (100 * (activity[msg.activity_msg].length - 1)) == 0) {
+              console.log("send warning message");
+              io.in(msg.activity_msg).emit("activity", {
+                "ctlmsg": "activity warning",
+                "wanring_msg": "too far",
+                "activity_msg": msg.activity_msg,
+                "account_msg_1": element.account_msg, // 距離過遠的人 1
+                "account_msg_2": msg.account_msg, // 距離過遠的人 2 
+                "long_distance": distance * 1000, // 兩人最遠距離
+                "time_msg": new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
+              });
+              tmp_msg = {
+                "ctlmsg": "activity warning",
+                "wanring_msg": "too far",
+                "activity_msg": msg.activity_msg,
+                "account_msg_1": element.account_msg, // 距離過遠的人 1
+                "account_msg_2": msg.account_msg, // 距離過遠的人 2 
+                "long_distance": distance * 1000, // 兩人最遠距離
+                "time_msg": new Date(datetime).toISOString().slice(0, 19).replace('T', ' ') // 發出警告的時間
+              }
+              insert_warning(sql.pool, tmp_msg)
             }
-            insert_warning(sql.pool,tmp_msg)
-          }else{
-            console.log("counter: "+activity[msg.activity_msg][0].counter);
-            console.log("war counter: "+100*(activity[msg.activity_msg].length-1));
+            console.log("counter++");
+            activity[msg.activity_msg][0] = { "counter": activity[msg.activity_msg][0].counter + 1 }
+          } else {
+            console.log("counter: " + activity[msg.activity_msg][0].counter);
+            console.log("war counter: " + 100 * (activity[msg.activity_msg].length - 1));
           }
         } catch (error) { }
 
@@ -143,7 +146,7 @@ let update_activity_member = (db, msg) => {
 let insert_warning = (db, msg) => {
   return new Promise((resolve, reject) => {
     let sql = "INSERT INTO `warning`(`msg`) VALUES (?)";
-    let param = [msg];
+    let param = [{msg}];
     db.query(sql, param, (err, result, fields) => {
       if (err) {
         reject(err);

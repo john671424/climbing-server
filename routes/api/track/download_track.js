@@ -7,10 +7,10 @@ const path =require('path');
 // }
 let select_track=(db,req)=>{
   return new Promise((resolve, reject) => {
-    let sql="SELECT * FROM `track` where `tID`=?";
+    let sql="SELECT * FROM `track` where `tID`=? and `track_locate` <> 'null'";
     let param=[req.query.tid];
     db.query(sql,param,(err,result,fields)=>{
-      if(err){
+      if(err || !result.length){
         reject(err);
       }else{
         resolve(result);
@@ -33,7 +33,7 @@ router.get('/',async function(req, res, next) {
       res.json({"result" : "Session fail"});
     }
   }catch (error) {
-    res.json({"result" : "Fail to download track"});
+    res.status(404).json({"result" : "Fail to download track"});
     console.log(error);
   }
 });
