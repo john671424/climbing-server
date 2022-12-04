@@ -8,7 +8,7 @@ let select_track=(db,req)=>{
     let sql="SELECT * FROM `track` WHERE `tid`=?";
     let param=[req.body.tID];
     db.query(sql,param,(err,result,fields)=>{
-      if(err){
+      if(err || !result.length || result.length!=1){
         reject(err);
       }else{
         resolve(result);
@@ -23,10 +23,10 @@ router.post('/',async function(req, res, next) {
       res.json(results_select[0]);
     }else{
       req.session.destroy();
-      res.json({"result" : "Session fail"});
+      res.status(405).json({"result" : "Session fail"});
     }
   }catch (error) {
-    res.json({"result" : "Fail to query the specific track"});
+    res.status(405).json({"result" : "Fail to query the specific track"});
     console.log(error);
   }
 });

@@ -18,16 +18,14 @@ let select_track=(db,req)=>{
   });
 }
 router.post('/',async function(req, res, next) {
-  console.log("123");
   try{
     console.log(req.body);
     if(req.session.account){
-      
       let results_select=await select_track(req.db,req);
       res.json(results_select);
     }else{
       req.session.destroy();
-      res.json({"result" : "Session fail"});
+      res.status(405).json({"result" : "Session fail"});
     }
   }catch (error) {
     res.json({"result" : "Fail to select track"});

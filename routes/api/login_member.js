@@ -38,11 +38,11 @@ router.post('/',async function(req, res, next) {
       res.json(results[0]);
     }else{
       req.session.destroy();
-      res.json({"result" : "Login fail"});
+      res.status(405).json({"result" : "Login fail"});
     }
   } catch (error) {
     req.session.destroy();
-    res.json({"result" : "Login fail"});
+    res.status(405).json({"result" : "Login fail"});
     console.log(error);
   }
 });
