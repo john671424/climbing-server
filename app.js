@@ -67,6 +67,45 @@ var TEST_Router =  require('./routes/api/test/test_login');
 var TEST_download_Router =  require('./routes/api/test/test_download');
 var TEST_upload_Router =  require('./routes/api/test/test_upload');
 var TEST_start_activity_Router =  require('./routes/api/test/test_start_activity');
+//public//
+//activity
+var Publicinsert_activityRouter =  require('./routes/public/api/activity/insert_activity');
+var Publicstart_activityRouter =  require('./routes/public/api/activity/start_activity');
+var Publicfinish_activityRouter =  require('./routes/public/api/activity/finish_activity');
+var Publicdelete_activityRouter =  require('./routes/public/api/activity/delete_activity');
+var Publicupdate_activityRouter =  require('./routes/public/api/activity/update_activity');
+var Publicselect_all_activityRouter =  require('./routes/public/api/activity/select_all_activity');
+var Publicselect_specific_activityRouter =  require('./routes/public/api/activity/select_specific_activity');
+var Publicselect_account_activityRouter =  require('./routes/public/api/activity/select_account_activity');
+//track
+var Publicinsert_trackRouter =  require('./routes/public/api/track/insert_track');
+var Publicselect_trackRouter =  require('./routes/public/api/track/select_track');
+var Publicupdate_trackRouter =  require('./routes/public/api/track/update_track');
+var Publicdelete_trackRouter =  require('./routes/public/api/track/delete_track');
+var Publicselect_all_trackRouter =  require('./routes/public/api/track/select_all_track');
+var Publicselect_specific_trackRouter =  require('./routes/public/api/track/select_specific_track');
+var Publicdownload_trackRouter =  require('./routes/public/api/track/download_track');
+var Publicupload_trackRouter =  require('./routes/public/api/track/upload_track');
+//member
+var Publicupdate_activity_memberRouter =  require('./routes/public/api/member/update_activity_member');
+var Publicupdate_distance_time_memberRouter =  require('./routes/public/api/member/update_distance_time_member');
+var Publicupdate_track_memberRouter =  require('./routes/public/api/member/update_track_member');
+var Publicupdate_memberRouter =  require('./routes/public/api/member/update_member');
+var Publicselect_uid_memberRouter =  require('./routes/public/api/member/select_uid_member');
+var Publicselect_memberRouter =  require('./routes/public/api/member/select_member');
+//test
+var PublicTEST_Router =  require('./routes/public/api/test/test_login');
+var PublicTEST_download_Router =  require('./routes/public/api/test/test_download');
+var PublicTEST_upload_Router =  require('./routes/public/api/test/test_upload');
+var PublicTEST_start_activity_Router =  require('./routes/public/api/test/test_start_activity');
+
+
+
+
+
+
+
+
 const { log } = require('console');
 
 var app = express();
@@ -189,7 +228,37 @@ app.use('/api/test/test_login', TEST_Router);//building
 app.use('/api/test/test_download', TEST_download_Router);//building
 app.use('/api/test/test_upload', TEST_upload_Router);//building
 app.use('/api/test/test_start_activity', TEST_start_activity_Router);//building
-
+//public//
+//activity
+app.use('/public/api/activity/insert_activity', Publicinsert_activityRouter);
+app.use('/public/api/activity/start_activity', Publicstart_activityRouter);
+app.use('/public/api/activity/finish_activity', Publicfinish_activityRouter);
+app.use('/public/api/activity/delete_activity', Publicdelete_activityRouter);
+app.use('/public/api/activity/update_activity', Publicupdate_activityRouter);
+app.use('/public/api/activity/select_all_activity', Publicselect_all_activityRouter);
+app.use('/public/api/activity/select_specific_activity', Publicselect_specific_activityRouter);
+app.use('/public/api/activity/select_account_activity', Publicselect_account_activityRouter);
+//track
+app.use('/public/api/track/insert_track', Publicinsert_trackRouter);
+app.use('/public/api/track/select_track', Publicselect_trackRouter);
+app.use('/public/api/track/update_track', Publicupdate_trackRouter);
+app.use('/public/api/track/delete_track', Publicdelete_trackRouter);
+app.use('/public/api/track/select_all_track', Publicselect_all_trackRouter);
+app.use('/public/api/track/select_specific_track', Publicselect_specific_trackRouter);
+app.use('/public/api/track/download_track', Publicdownload_trackRouter);
+app.use('/public/api/track/upload_track', Publicupload_trackRouter);
+//member
+app.use('/public/api/member/update_activity_member',Publicupdate_activity_memberRouter);
+app.use('/public/api/member/update_distance_time_member',Publicupdate_distance_time_memberRouter);
+app.use('/public/api/member/update_track_member',Publicupdate_track_memberRouter);
+app.use('/public/api/member/update_member',Publicupdate_memberRouter);
+app.use('/public/api/member/select_uid_member',Publicselect_uid_memberRouter);
+app.use('/public/api/member/select_member',Publicselect_memberRouter);
+//test
+app.use('/public/api/test/test_login', PublicTEST_Router);//building
+app.use('/public/api/test/test_download', PublicTEST_download_Router);//building
+app.use('/public/api/test/test_upload', PublicTEST_upload_Router);//building
+app.use('/public/api/test/test_start_activity', PublicTEST_start_activity_Router);//building
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

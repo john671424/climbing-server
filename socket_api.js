@@ -123,6 +123,20 @@ io.on("connection", function (socket) {
     if (msg.ctlmsg == "activity warning") {
       io.in(msg.activity_msg).emit("activity", msg);
     }
+    if (msg.ctlmsg == "check") {
+      check=false
+      socket.rooms.forEach(element=>{
+        if(element==msg.account_msg){
+          check=true
+        }
+      })
+      if(check){
+        io.in(msg.account_msg).emit("account", "already in room");
+      }else{
+        socket.join(msg.account_msg);
+        io.in(msg.account_msg).emit("account", "join account room success");
+      }
+    }
   });
   socket.on("disconnect", function () {
     console.log("disconnect");
