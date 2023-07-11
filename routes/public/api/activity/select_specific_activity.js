@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 // {
-//     "uID":"1",
+//     "aID":"1",
 // }
 let select_activity=(db,req)=>{
   return new Promise((resolve, reject) => {

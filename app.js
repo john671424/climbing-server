@@ -68,6 +68,8 @@ var TEST_download_Router =  require('./routes/api/test/test_download');
 var TEST_upload_Router =  require('./routes/api/test/test_upload');
 var TEST_start_activity_Router =  require('./routes/api/test/test_start_activity');
 //public//
+var Publicsignup_memberRouter =  require('./routes/public/api/signup_member');
+var Publiclogin_memberRouter =  require('./routes/public/api/login_member');
 //activity
 var Publicinsert_activityRouter =  require('./routes/public/api/activity/insert_activity');
 var Publicstart_activityRouter =  require('./routes/public/api/activity/start_activity');
@@ -229,6 +231,8 @@ app.use('/api/test/test_download', TEST_download_Router);//building
 app.use('/api/test/test_upload', TEST_upload_Router);//building
 app.use('/api/test/test_start_activity', TEST_start_activity_Router);//building
 //public//
+app.use('/public/api/signup_member', Publicsignup_memberRouter);
+app.use('/public/api/login_member', Publiclogin_memberRouter);
 //activity
 app.use('/public/api/activity/insert_activity', Publicinsert_activityRouter);
 app.use('/public/api/activity/start_activity', Publicstart_activityRouter);
