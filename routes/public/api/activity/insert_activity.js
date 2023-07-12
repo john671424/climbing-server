@@ -1,5 +1,6 @@
 const { log } = require('debug/src/browser');
 var express = require('express');
+var security= require('../../../../security');
 var router = express.Router();
 //須提交創辦者uID activity_name activity_time tID warning_distance warning_time\
 //及參與人員
@@ -39,17 +40,12 @@ let select_insert_activity = (db, aID) => {
   });
 }
 
-router.post('/', async function (req, res, next) {
+router.post('/',security, async function (req, res, next) {
   try {
-    if (req.session.account) {
-      let insert_activity_results = await insert_activity(req.db, req);
-      members = JSON.parse(req.body.members);
-      let select_insert_activity_results = await select_insert_activity(req.db, insert_activity_results.insertId)
-      res.json(select_insert_activity_results[0]);
-    } else {
-      req.session.destroy();
-      res.json({ "result": "Session fail" });
-    }
+    let insert_activity_results = await insert_activity(req.db, req);
+    members = JSON.parse(req.body.members);
+    let select_insert_activity_results = await select_insert_activity(req.db, insert_activity_results.insertId)
+    res.json(select_insert_activity_results[0]);
   } catch (error) {
     res.json({ "result": "Fail to add activity" });
     console.log(error);

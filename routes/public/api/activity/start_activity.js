@@ -1,5 +1,5 @@
-const { log } = require('debug/src/browser');
 var express = require('express');
+var security= require('../../../../security');
 var router = express.Router();
 // {
 //     "aID":"1",
@@ -37,16 +37,11 @@ let select_activity=(db,req)=>{
     });activity_member
   }
 
-router.post('/',async function(req, res, next) {
+router.post('/',security,async function(req, res, next) {
   try{
-    if(req.session.account){
-      let update_activity_results=await start_activity(req.db,req);
-      let select_activity_results=await select_activity(req.db,req);
-      res.json(select_activity_results[0])
-    }else{
-      req.session.destroy();
-      res.json({"result" : "session fail"});
-    }
+    let update_activity_results=await start_activity(req.db,req);
+    let select_activity_results=await select_activity(req.db,req);
+    res.json(select_activity_results[0])
   }catch (error) {
     res.json({"result" : "Fail to start a activity"});
     console.log(error);

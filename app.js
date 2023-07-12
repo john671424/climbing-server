@@ -10,6 +10,8 @@ var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 const fileUpload = require("express-fileupload");
 var sql = require('./mysql_api');
+var security=require('./security');
+var security_plus=require('./security_plus');
 
 
 
@@ -67,6 +69,7 @@ var TEST_Router =  require('./routes/api/test/test_login');
 var TEST_download_Router =  require('./routes/api/test/test_download');
 var TEST_upload_Router =  require('./routes/api/test/test_upload');
 var TEST_start_activity_Router =  require('./routes/api/test/test_start_activity');
+var TEST_session_Router =  require('./routes/api/test/test_session');
 //public//
 var Publicsignup_memberRouter =  require('./routes/public/api/signup_member');
 var Publiclogin_memberRouter =  require('./routes/public/api/login_member');
@@ -230,6 +233,7 @@ app.use('/api/test/test_login', TEST_Router);//building
 app.use('/api/test/test_download', TEST_download_Router);//building
 app.use('/api/test/test_upload', TEST_upload_Router);//building
 app.use('/api/test/test_start_activity', TEST_start_activity_Router);//building
+app.use('/api/test/test_session', TEST_session_Router);//ing
 //public//
 app.use('/public/api/signup_member', Publicsignup_memberRouter);
 app.use('/public/api/login_member', Publiclogin_memberRouter);

@@ -1,4 +1,5 @@
 var express = require('express');
+var security= require('../../../../security');
 var router = express.Router();
 // {
 //     "uID":"1",
@@ -17,15 +18,10 @@ let select_activity=(db,req)=>{
       })
     });
 }
-router.post('/',async function(req, res, next) {
+router.post('/',security,async function(req, res, next) {
   try{
-    if(req.session.account){
-      let select_activity_results=await select_activity(req.db,req);
-      res.json(select_activity_results);
-    }else{
-      req.session.destroy();
-      res.json({"result" : "Session fail"});
-    }
+    let select_activity_results=await select_activity(req.db,req);
+    res.json(select_activity_results);
   }catch (error) {
     res.json({"result" : "Fail to query the account activity"});
     console.log(error);
