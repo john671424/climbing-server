@@ -24,8 +24,8 @@ router.post('/',security,async function(req, res, next) {
       return res.status(400).send("No files were uploaded.");
     }
     const file = req.files.files;
-    const filepath = path.resolve('./')+"/files/tracks/"+file.name+Date.now();
-    const locate = "tracks/"+file.name+Date.now();
+    const filepath = path.resolve('./')+"/files/tracks/"+Date.now()+file.name;
+    const locate = "tracks/"+Date.now()+file.name;
     await file.mv(filepath,(err) => {
       if (err) {
         return res.status(500).send(err);
