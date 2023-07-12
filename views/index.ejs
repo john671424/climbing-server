@@ -7,7 +7,7 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <form id="send-form" method="POST" onsubmit="return firstFunction()">
+    <!-- <form id="send-form" method="POST" onsubmit="return firstFunction()">
       <input type="text" name="channel" id="channel" placeholder="channel">
       <input type="text" name="ctlmsg" id="ctlmsg" placeholder="ctlmsg">
       <input type="text" name="account_msg" id="account_msg" placeholder="account_msg">
@@ -20,10 +20,10 @@
       <input type="text" name="distance_msg" id="distance_msg" placeholder="distance_msg">
       <input type="text" name="warning_msg" id="warning_msg" placeholder="warning_msg">
       <input type="submit" id="submit" value="送出">
-    </form>
-    <script src="/socket.io/socket.io.js">
-    </script>
-<script>
+    </form> -->
+    <!-- <script src="/socket.io/socket.io.js">
+    </script> -->
+<!-- <script>
   // 這是什麼醜不啦嘰的東西
   var socket = io({ transports: ["websocket"],withCredentials: true});
   var socketid;
@@ -65,6 +65,6 @@
     ,"location_msg":{"latitude": latitude_msg,"longitude":longitude_msg,"elevation":elevation_msg},"distance_msg":distance_msg,"warning_msg":warning_msg,"account_msg_1":account_msg_1,"account_msg_2":account_msg_2});
     return false;
   }
-</script>
+</script> -->
   </body>
 </html>

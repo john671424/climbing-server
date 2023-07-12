@@ -1,11 +1,11 @@
 var express = require('express');
 var security = require('../security');
 var router = express.Router();
-router.get('/',security,async function (req, res, next) {
+router.get('/',async function (req, res, next) {
   try {
-    res.render('index', { title: 'Express1' });
+    res.render('index', { title: 'OK' });
   } catch (error) {
-    res.render('index', { title: 'Error' });
+    res.render('error', { title: 'Error' });
   }
 });
 
