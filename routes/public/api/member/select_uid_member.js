@@ -1,4 +1,5 @@
 var express = require('express');
+var security= require('../../../../security');
 var router = express.Router();
 // {
 //     "uID":"9"
@@ -21,16 +22,10 @@ let select_member = (db, req) => {
     })
   });
 }
-router.post('/', async function (req, res, next) {
+router.post('/',security,async function (req, res, next) {
   try {
-    let member_results = await select_member(req.db, req);
-    if (req.session.account) {
-      let select_update_member_results = await select_member(req.db, req);
-      res.json(select_update_member_results[0]);
-    } else {
-      req.session.destroy();
-      res.json({ "result": "session fail" });
-    }
+    let select_member_results = await select_member(req.db, req);
+    res.json(select_member_results[0]);
   } catch (error) {
     res.json({ "result": "Fail to select uid in member table" });
     console.log(error);

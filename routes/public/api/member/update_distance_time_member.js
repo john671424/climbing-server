@@ -1,4 +1,5 @@
 var express = require('express');
+var security_plus= require('../../../../security_plus');
 var router = express.Router();
 // {
 //     "uID":"9"
@@ -34,17 +35,12 @@ let update_member=(db,total_distance,total_time,uID,old_distance,old_time)=>{
       })
     });
   }
-router.post('/',async function(req, res, next) {
+router.post('/',security_plus,async function(req, res, next) {
   try{
     let member_results=await select_member(req.db,req.body.uID);
-    if(req.session.account && member_results[0].account==req.session.account){
-      let update_member_results=await update_member(req.db,req.body.total_distance,req.body.total_time,req.body.uID,member_results[0].total_distance,member_results[0].total_time);
-      let select_update_member_results=await select_member(req.db,req.body.uID);
-      res.json(select_update_member_results[0]);
-    }else{
-      req.session.destroy();
-      res.json({"result" : "session fail"});
-    }
+    let update_member_results=await update_member(req.db,req.body.total_distance,req.body.total_time,req.body.uID,member_results[0].total_distance,member_results[0].total_time);
+    let select_update_member_results=await select_member(req.db,req.body.uID);
+    res.json(select_update_member_results[0]);
   }catch (error) {
     res.json({"result" : "Fail to update total_distance and total_time in member table"});
     console.log(error);

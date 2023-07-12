@@ -1,7 +1,12 @@
 var express = require('express');
+var security_plus= require('../../../../security_plus');
 var router = express.Router();
 // {
-//     "uID":"9"
+//     "uID":"9",
+//     "name":"蕭",
+//     "password":"john",
+//     "email":"test@test.com",
+//     "phone":"0912345674"
 // }
 
 let update_member=(db,req)=>{
@@ -34,17 +39,11 @@ let update_member=(db,req)=>{
       })
     });
   }
-router.post('/',async function(req, res, next) {
+router.post('/',security_plus,async function(req, res, next) {
   try{
-    let member_results=await select_member(req.db,req);
-    if(req.session.account && member_results[0].account==req.session.account){
       let update_member_results=await update_member(req.db,req);
       let select_update_member_results=await select_member(req.db,req);
       res.json(select_update_member_results[0]);
-    }else{
-      req.session.destroy();
-      res.json({"result" : "session fail"});
-    }
   }catch (error) {
     res.json({"result" : "Fail to update member"});
     console.log(error);

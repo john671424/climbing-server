@@ -3,7 +3,6 @@ async function security_plus(req, res, next){
         let member = await select_member(req.db, req.body.uID);
         if (req.session.account && member[0].account == req.session.account) {
             console.log(req.session.account);
-            console.log(member[0].account);
             next();
         } else {
             console.log("session failed");
