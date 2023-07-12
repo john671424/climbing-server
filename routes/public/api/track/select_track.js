@@ -1,5 +1,5 @@
-const { log } = require('debug/src/browser');
 var express = require('express');
+var security= require('../../../../security');
 var router = express.Router();
 // {
 //     "uID":"1",
@@ -17,16 +17,10 @@ let select_track=(db,req)=>{
     })
   });
 }
-router.post('/',async function(req, res, next) {
+router.post('/',security,async function(req, res, next) {
   try{
-    console.log(req.body);
-    if(req.session.account){
-      let results_select=await select_track(req.db,req);
-      res.json(results_select);
-    }else{
-      req.session.destroy();
-      res.status(405).json({"result" : "Session fail"});
-    }
+    let results_select=await select_track(req.db,req);
+    res.json(results_select);
   }catch (error) {
     res.json({"result" : "Fail to select track"});
     console.log(error);

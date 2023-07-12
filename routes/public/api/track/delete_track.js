@@ -1,4 +1,5 @@
 var express = require('express');
+var security_plus= require('../../../../security_plus');
 var router = express.Router();
 // {
 //     "uID":"1"
@@ -17,33 +18,10 @@ let delete_track=(db,req)=>{
     })
   });
 }
-let select_member=(db,req)=>{
-  return new Promise((resolve, reject) => {
-    let sql="SELECT * FROM `member` WHERE `uID`=?";
-    let param=[req.body.uID];
-    db.query(sql,param,(err,result,fields)=>{
-      if(err){
-        reject(err);
-      }else{
-        if(result.length!=1){
-          reject("error");
-        }else{
-          resolve(result);
-        }
-      }
-    })
-  });
-}
-router.post('/',async function(req, res, next) {
+router.post('/',security_plus,async function(req, res, next) {
   try{
-    let member_results=await select_member(req.db,req);
-    if(req.session.account && member_results[0].account==req.session.account){
-      let delete_result=await delete_track(req.db,req);
-      res.json({"result" : "Delete a track successfully"});
-    }else{
-      req.session.destroy();
-      res.json({"result" : "Session fail"});
-    }
+    let delete_result=await delete_track(req.db,req);
+    res.json({"result" : "Delete a track successfully"});
   }catch (error) {
     res.json({"result" : "Fail to delete track"});
     console.log(error);
