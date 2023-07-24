@@ -4,8 +4,8 @@ function security(req, res, next){
         else{
             console.log("Session failed");
             console.log("sessionID:"+req.sessionID);
+            console.log("session:"+JSON.stringify(req.session));
             console.log("session account:"+req.session.account);
-            req.session.destroy();
             res.status(403).json({ "result": "Session fail" });
         }
     }catch(error){

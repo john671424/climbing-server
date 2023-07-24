@@ -118,8 +118,8 @@ var app = express();
 
 app.use(session({
   secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
+  resave: true,
+  saveUninitialized: false,
   cookie: { sameSite: true,
             // secure: true ,
             //expires: new Date(253402300000000),
