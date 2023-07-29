@@ -43,6 +43,7 @@ router.post('/',security_plus,async function(req, res, next) {
   try{
       let update_member_results=await update_member(req.db,req);
       let select_update_member_results=await select_member(req.db,req);
+      console.log(req.headers);
       res.json(select_update_member_results[0]);
   }catch (error) {
     res.json({"result" : "Fail to update member"});
